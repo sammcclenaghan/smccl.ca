@@ -8,8 +8,22 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    // Fix HMR issues with Bun
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
+    // Prevent caching issues
+    optimizeDeps: {
+      exclude: ["astro:content"],
+    },
+  },
+  markdown: {
+    shikiConfig: {
+      theme: "dracula",
+    },
   },
   site: "https://samcclenaghan.netlify.app/",
-
   integrations: [sitemap()],
 });
