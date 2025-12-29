@@ -1,12 +1,48 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 ---
 
 <Layout>
   <div class="space-y-8">
     <div class="space-y-4 animate">
-      <h1 class="font-medium text-3xl">Blog</h1>
-      <p class="leading-relaxed">Notes and writing. Nothing published yet.</p>
+      <h1 class="font-medium text-3xl">
+        <span class="text-blue-300">*</span> Blog
+      </h1>
     </div>
+
+    {
+      posts.length === 0 ? (
+        <p class="text-muted-foreground animate">No posts yet.</p>
+      ) : (
+        <ul class="space-y-3">
+          {posts.map((post) => (
+            <li class="animate">
+              <a
+                href={`/blog/${post.id}`}
+                class="flex justify-between items-baseline gap-4 group"
+              >
+                <span class="group-hover:underline">{post.data.title}</span>
+                <span class="text-muted-foreground text-sm shrink-0">
+                  {formatDate(post.data.date)}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </div>
 </Layout>

@@ -21,7 +21,7 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: "dracula",
+      theme: "poimandres",
     },
   },
   site: "https://samcclenaghan.netlify.app/",
