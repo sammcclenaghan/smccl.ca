@@ -305,7 +305,7 @@
 }
 
 .prose :where(code):not(:where(pre *)) {
-  @apply bg-muted px-1.5 py-0.5 rounded-md text-sm font-normal border border-border/50;
+  @apply bg-muted px-1.5 py-0.5 rounded-sm text-sm font-normal border border-border/50;
   background-color: var(--muted);
 }
 
