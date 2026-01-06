@@ -19,9 +19,12 @@ export default defineConfig({
       exclude: ["astro:content"],
     },
   },
-  markdown: {
+markdown: {
     shikiConfig: {
-      theme: "poimandres",
+      themes: {
+        light: "one-light",
+        dark: "poimandres",
+      },
     },
   },
   site: "https://samcclenaghan.netlify.app/",
