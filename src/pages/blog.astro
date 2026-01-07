@@ -17,7 +17,7 @@ function formatDate(date: Date) {
 
 <Layout>
   <div class="space-y-8">
-    <div class="space-y-4 animate">
+    <div class="space-y-4">
       <h1 class="font-medium text-3xl">
         <span class="text-blue-300">*</span> Blog
       </h1>
@@ -25,11 +25,11 @@ function formatDate(date: Date) {
 
     {
       posts.length === 0 ? (
-        <p class="text-muted-foreground animate">No posts yet.</p>
+        <p class="text-muted-foreground">No posts yet.</p>
       ) : (
         <ul class="space-y-3">
           {posts.map((post) => (
-            <li class="animate">
+            <li>
               <a
                 href={`/blog/${post.id}`}
                 class="flex justify-between items-baseline gap-4 group"

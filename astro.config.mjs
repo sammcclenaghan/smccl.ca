@@ -19,7 +19,7 @@ export default defineConfig({
       exclude: ["astro:content"],
     },
   },
-markdown: {
+  markdown: {
     shikiConfig: {
       themes: {
         light: "one-light",
