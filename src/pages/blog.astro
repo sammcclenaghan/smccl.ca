@@ -19,7 +19,7 @@ function formatDate(date: Date) {
   <div class="space-y-8">
     <div class="space-y-4 animate">
       <h1 class="font-medium text-3xl">
-        <span class="text-blue-300">*</span> Blog
+        <span class="text-blue-400 dark:text-blue-300">*</span> Blog
       </h1>
     </div>
 
@@ -34,7 +34,7 @@ function formatDate(date: Date) {
                 href={`/blog/${post.id}`}
                 class="flex justify-between items-baseline gap-4 group"
               >
-                <span class="group-hover:underline">{post.data.title}</span>
+                <span class="group-hover:text-blue-400 dark:group-hover:text-blue-300 transition-colors">{post.data.title}</span>
                 <span class="text-muted-foreground text-sm shrink-0">
                   {formatDate(post.data.date)}
                 </span>
