@@ -22,7 +22,12 @@ function formatDate(date: Date) {
 }
 ---
 
-<Layout>
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  publishedDate={post.data.date}
+>
   <article>
     <header class="mb-8">
       <h1 class="text-3xl font-bold mb-2">
