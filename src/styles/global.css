@@ -327,27 +327,25 @@
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
 
-  /* Dark mode specific overrides to match "nexxel" feel */
-  --tw-prose-invert-body: #a3a3a3;
-  /* Softer gray for body text */
-  --tw-prose-invert-headings: #ffffff;
-  /* Bright white for headings */
-  --tw-prose-invert-lead: #a3a3a3;
+  /* Keep prose colors aligned with the site's normal theme tokens */
+  --tw-prose-invert-body: var(--foreground);
+  --tw-prose-invert-headings: var(--foreground);
+  --tw-prose-invert-lead: var(--muted-foreground);
   --tw-prose-invert-links: #93c5fd;
   /* Blue-300 */
-  --tw-prose-invert-bold: #ffffff;
-  --tw-prose-invert-counters: #737373;
-  --tw-prose-invert-bullets: #525252;
-  --tw-prose-invert-hr: #262626;
-  --tw-prose-invert-quotes: #e5e5e5;
-  --tw-prose-invert-quote-borders: #262626;
-  --tw-prose-invert-captions: #737373;
-  --tw-prose-invert-code: #ffffff;
-  --tw-prose-invert-pre-code: #e5e5e5;
+  --tw-prose-invert-bold: var(--foreground);
+  --tw-prose-invert-counters: var(--muted-foreground);
+  --tw-prose-invert-bullets: var(--muted-foreground);
+  --tw-prose-invert-hr: var(--border);
+  --tw-prose-invert-quotes: var(--foreground);
+  --tw-prose-invert-quote-borders: var(--border);
+  --tw-prose-invert-captions: var(--muted-foreground);
+  --tw-prose-invert-code: var(--foreground);
+  --tw-prose-invert-pre-code: var(--foreground);
   --tw-prose-invert-pre-bg: var(--card);
   /* Matches site background perfectly */
-  --tw-prose-invert-th-borders: #404040;
-  --tw-prose-invert-td-borders: #262626;
+  --tw-prose-invert-th-borders: var(--border);
+  --tw-prose-invert-td-borders: var(--border);
 }
 
 .prose :where(code):not(:where(pre *)) {
@@ -378,14 +376,4 @@
 
 .prose :where(a) {
   @apply no-underline hover:underline decoration-blue-300/50 underline-offset-4;
-}
-
-/* Softer body text for comfortable long-form reading in dark mode */
-.dark .prose :where(p, li, blockquote) {
-  color: #cccccc;
-}
-
-/* Softer body text for comfortable long-form reading in light mode */
-.prose :where(p, li, blockquote) {
-  color: oklch(30% 0.02 50); /* Warm dark brown, easy on the eyes */
 }
