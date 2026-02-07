@@ -80,10 +80,20 @@ const articleSchema = type === "article" && title && publishedDate ? {
     <!-- Inline theme detection to prevent flash of wrong theme -->
     <script is:inline>
       (function() {
+        const THEME_LIGHT = 'light';
+        const THEME_DARK = 'dark';
+        const THEME_SYSTEM = 'system';
         const stored = localStorage.getItem('theme');
+        const theme = stored === THEME_LIGHT || stored === THEME_DARK || stored === THEME_SYSTEM
+          ? stored
+          : THEME_SYSTEM;
+        if (stored !== theme) {
+          localStorage.setItem('theme', theme);
+        }
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isDark = stored === 'dark' || (stored !== 'light' && prefersDark);
-        if (isDark) document.documentElement.classList.add('dark');
+        const isDark = theme === THEME_DARK || (theme === THEME_SYSTEM && prefersDark);
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.dataset.theme = theme;
       })();
     </script>
     <meta charset="UTF-8" />

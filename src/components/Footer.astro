@@ -11,6 +11,7 @@
       <button
         data-theme="light"
         aria-label="Light theme"
+        aria-pressed="false"
         class="group size-8 flex items-center justify-center rounded-full hover:bg-secondary transition-colors duration-200"
       >
         <svg
@@ -39,6 +40,7 @@
       <button
         data-theme="dark"
         aria-label="Dark theme"
+        aria-pressed="false"
         class="group size-8 flex items-center justify-center rounded-full hover:bg-secondary transition-colors duration-200"
       >
         <svg
@@ -58,8 +60,8 @@
       </button>
       <button
         data-theme="system"
-        aria-label="System theme"
-        aria-pressed="false"
+        aria-label="Adapt to system theme"
+        aria-pressed="true"
         class="group size-8 flex items-center justify-center rounded-full hover:bg-secondary transition-colors duration-200"
       >
         <svg
@@ -89,6 +91,7 @@
       const THEME_LIGHT = "light";
       const THEME_DARK = "dark";
       const THEME_SYSTEM = "system";
+      const DEFAULT_THEME: ThemeMode = THEME_SYSTEM;
 
       const docEl = document.documentElement;
       const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -99,7 +102,15 @@
           value === THEME_DARK ||
           value === THEME_SYSTEM
           ? (value as ThemeMode)
-          : THEME_SYSTEM;
+          : DEFAULT_THEME;
+      }
+
+      function getTheme(): ThemeMode {
+        const mode = getStoredTheme();
+        if (localStorage.getItem(STORAGE_KEY) !== mode) {
+          localStorage.setItem(STORAGE_KEY, mode);
+        }
+        return mode;
       }
 
       function systemPrefersDark(): boolean {
@@ -149,14 +160,14 @@
 
       // Keep system mode in sync with OS changes
       media.addEventListener("change", () => {
-        if (getStoredTheme() === THEME_SYSTEM) {
+        if (getTheme() === THEME_SYSTEM) {
           applyTheme(THEME_SYSTEM);
         }
       });
 
       // Ensure correct theme is applied to the incoming document before swap to avoid flash
       document.addEventListener("astro:before-swap", (event) => {
-        const mode = getStoredTheme();
+        const mode = getTheme();
         const newDoc = event.newDocument;
         const html = newDoc.documentElement;
         const isDark = computeIsDark(mode);
@@ -166,15 +177,17 @@
 
       // Re-wire buttons on each page load under SPA navigation
       document.addEventListener("astro:page-load", () => {
-        applyTheme(getStoredTheme());
+        const mode = getTheme();
+        applyTheme(mode);
         wireButtons();
-        updateButtonsActive(getStoredTheme());
+        updateButtonsActive(mode);
       });
 
       // Initial setup
-      applyTheme(getStoredTheme());
+      const initialMode = getTheme();
+      applyTheme(initialMode);
       wireButtons();
-      updateButtonsActive(getStoredTheme());
+      updateButtonsActive(initialMode);
     })();
   </script>
 </footer>
