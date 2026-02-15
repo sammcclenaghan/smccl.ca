@@ -78,7 +78,7 @@
 
 @theme inline {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -284,14 +284,6 @@
     opacity: 0.9;
     transform: translateY(0);
   }
-}
-
-@font-face {
-  font-family: Soehne;
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("public/fonts/soehne-buch.woff2") format("woff2");
 }
 
 @keyframes fadeInUp {
