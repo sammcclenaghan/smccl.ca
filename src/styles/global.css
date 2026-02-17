@@ -303,7 +303,7 @@
   --tw-prose-body: var(--foreground);
   --tw-prose-headings: var(--foreground);
   --tw-prose-lead: var(--muted-foreground);
-  --tw-prose-links: oklch(45% 0.15 250);
+  --tw-prose-links: #60a5fa;
   /* Rich blue that complements warm cream */
   --tw-prose-bold: var(--foreground);
   --tw-prose-counters: var(--muted-foreground);

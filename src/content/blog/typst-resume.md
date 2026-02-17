@@ -1,6 +1,6 @@
 ---
-title: "Rewrite your resume in typst"
-description: "LaTeX is overkill for resumes. Here's how I built a clean, maintainable resume in Typst with a two-file architecture."
+title: "I Rebuilt My Resume in Typst—Here's Why"
+description: "I got tired of fighting LaTeX templates I didn't understand. So I rebuilt my entire resume from scratch in Typst, just to see if I could make something cleaner."
 date: 2025-01-15
 ---
 
