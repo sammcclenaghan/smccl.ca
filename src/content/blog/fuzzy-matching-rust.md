@@ -4,23 +4,31 @@ description: "I always took fuzzy finders for granted. So I dug into how fuzzy m
 date: 2025-10-16
 ---
 
-Every time I open a fuzzy finder — fzf in the terminal, Telescope in Neovim, the file picker in Helix — I type a few characters and the right file just appears. I never thought about *how* it appears. I type `mcon`, and somehow `src/models/config.rs` floats to the top over `src/main.rs` and `README.md`. It feels like magic, and I'd been treating it like magic for years without ever asking how it actually works.
+I have always used fuzzy finders like fzf in the terminal or Telescope in Neovim and ended up really loving them. They are probably my most used tools. In these tools, you type a few characters and the right file just appears. For example, typing `mcon` somehow brings `src/models/config.rs` to the top over `src/main.rs`.
 
-I wanted to understand the mechanics. Not just "it matches substrings" — I wanted to know how a fuzzy matcher decides that one match is *better* than another, how it scores candidates, and what makes typing three characters enough to find a file in a project with hundreds of them. I ended up building a small CLI tool that uses fuzzy matching to stage git files, and in the process I learned a lot more than I expected.
+I found all of this very interesting and dove deeper into how they actually work. In this post, we'll focus on the mechanics of fuzzy matching and use them to implement a small CLI tool that stages git files.
 
-## what fuzzy matching actually is
+## Understanding Fuzzy Matching
 
-The core idea is simple: given a query string and a list of candidates, find the candidates that contain the query's characters in order, even if they're not adjacent. So the query `mcon` matches `models/config.rs` because `m`, `c`, `o`, `n` all appear in that order — the `m` from `models`, then `c`, `o`, `n` from `config`. It also matches `my_connection.rs` and probably a dozen other paths. The interesting part isn't finding matches — it's *ranking* them.
+The core idea of fuzzy matching is simple: given a query string and a list of candidates, find the candidates that contain the query's characters in order, even if they're not adjacent. So the query `mcon` matches `models/config.rs` because `m`, `c`, `o`, `n` all appear in that order.
 
-A good fuzzy matcher assigns a score to each match based on how "good" the alignment is. Characters that match at the start of a word score higher. Consecutive character matches score higher. Matches after a path separator or underscore score higher because those are natural word boundaries in file paths. The query `mcon` should rank `models/config.rs` above `some_macro_notes.txt` even though both contain the same characters in the same order, because the first one has matches at word boundaries.
+The interesting part isn't finding matches — it's ranking them. A good fuzzy matcher assigns a score to each match based on how "good" the alignment is. 
 
-I had no idea any of this was happening. I just assumed fuzzy finders were doing some kind of substring search with extra steps.
+### Components of a Good Match
 
-## nucleo — the engine behind helix
+- **Word Boundaries:** Characters that match at the start of a word score higher.
+- **Consecutive Matches:** Consecutive character matches score higher.
+- **Path Separators:** Matches after a path separator (`/`) or underscore (`_`) score higher because those are natural boundaries in file paths.
 
-Rather than writing a scoring algorithm from scratch, I used [nucleo-matcher](https://crates.io/crates/nucleo-matcher), which is the same fuzzy matching engine that powers the Helix editor's file picker. It implements the kind of scoring I described above — word boundary bonuses, consecutive match bonuses, gap penalties — and it's fast enough to score thousands of candidates interactively.
+## Implementation
 
-The API is straightforward. You create a `Matcher` with a config, parse your query into a `Pattern`, and call `match_list` to score every candidate:
+Now that we know the basics of fuzzy matching, we can implement it. Rather than writing a scoring algorithm from scratch, we'll use `nucleo-matcher`, which is the same engine that powers the Helix editor. It implements all the scoring heuristics we just discussed and is extremely fast.
+
+We'll be using Rust in this blog post as it is very performant and has great libraries for this use case.
+
+### Define the Matcher
+
+First, we need to define our matcher and parse our query pattern.
 
 ```rust
 use nucleo_matcher::pattern::{CaseMatching, Normalization, Pattern};
@@ -34,15 +42,16 @@ let results = pattern.match_list(&candidates, &mut matcher);
 // results: [("src/models/config.rs", 98), ...]
 ```
 
-`match_paths()` is important — it tells nucleo to treat `/` as a word boundary, which means path separators boost the score when a match character falls right after one. `CaseMatching::Ignore` makes queries case-insensitive, and `Normalization::Smart` handles Unicode normalization so accented characters match their base forms.
+Here, we do a few things:
+- We create a `Matcher` using `match_paths()`. This is important as it tells nucleo to treat `/` as a word boundary.
+- We parse the query into a `Pattern`, ignoring case and using smart Unicode normalization.
+- Finally, `match_list` returns a sorted list of `(candidate, score)` tuples. Candidates that don't match at all are excluded.
 
-The thing that surprised me is that `match_list` returns a sorted list of `(candidate, score)` tuples. Candidates that don't match at all are excluded entirely. The score is a `u32` — higher is better. You don't have to write any comparison logic yourself for single-token queries; nucleo handles all of it.
+### Multi-Token Matching
 
-## multi-token matching
+Things get more interesting when you have multiple query tokens. Say you want to find a file that matches both `mod` and `conf`. Each token should narrow the results, not expand them.
 
-Things get more interesting when you have multiple query tokens. Say you want to find a file that matches both `mod` and `conf` — you're looking for something in the models directory that's related to config. Each token should narrow the results, not expand them.
-
-I implemented this as an intersection. Each token produces a map from candidate index to score. For the first token, the map is just the initial results. For each subsequent token, I keep only candidates that appear in *both* the existing map and the new token's matches, summing their scores:
+We can implement this as an intersection. Each token produces a map from candidate index to score.
 
 ```rust
 let mut cumulative: HashMap<usize, u32> = HashMap::new();
@@ -63,11 +72,11 @@ for tok in &tokens {
 }
 ```
 
-This gives you AND semantics — every token must match for a candidate to survive. And the cumulative score means candidates that score well on *all* tokens rank highest. If you type `mod conf`, a file like `models/config.rs` gets the score from matching `mod` plus the score from matching `conf`, and that combined score beats a file that only weakly matches both.
+This gives us AND semantics, meaning every token must match for a candidate to survive. By summing the scores, a file that scores well on all tokens will rank the highest.
 
-## when fuzzy isn't what you want
+### Glob Pattern Fallback
 
-Sometimes you don't want fuzzy matching at all. If someone types `*.rs`, they clearly want a glob pattern, not a fuzzy search for the characters `*`, `.`, `r`, `s`. So I added a fallback: if a token contains `*`, treat it as a glob instead of a fuzzy query.
+Sometimes you don't want fuzzy matching at all. If someone types `*.rs`, they clearly want a glob pattern. We can add a fallback for this:
 
 ```rust
 let is_glob = token.contains('*');
@@ -84,13 +93,11 @@ if is_glob {
 }
 ```
 
-Glob matches get a flat score of 1 since there's no concept of "how well" something matches a glob — either it matches or it doesn't. They still participate in the intersection logic with fuzzy tokens, so you can write something like `*.rs mod` to find Rust files in the models directory.
+Glob matches get a flat score of 1. Because of the intersection logic, you can still mix them, like `*.rs mod` to find Rust files in the models directory.
 
-## not shelling out to git
+### Interacting with Git
 
-I wanted this to work as a git subcommand (`git fad`), which meant interacting with git programmatically. My first instinct was `std::process::Command` — just shell out to `git status` and parse the output. But then I found [git2](https://crates.io/crates/git2), which is a set of Rust bindings for libgit2, and it's much cleaner.
-
-Getting unstaged and untracked files is a single API call:
+To make this work as a git subcommand, we need to interact with git programmatically. We can use the `git2` crate, which provides Rust bindings for libgit2.
 
 ```rust
 let repo = Repository::open(repo_path)?;
@@ -101,11 +108,11 @@ opts.include_untracked(true)
 let statuses = repo.statuses(Some(&mut opts))?;
 ```
 
-Each status entry has flags you can check — `WT_NEW` for untracked, `WT_MODIFIED` for modified, `WT_DELETED` for deleted. Staging a file is similarly direct: open the index, add the path, write it back. No string parsing, no worrying about `git status` output format changing between versions. Turns out there's a whole world of git tooling that doesn't involve parsing CLI output, and I'd never explored it.
+This is much cleaner than shelling out to `git status` and parsing the output. We can easily get unstaged and untracked files with a single API call.
 
-## tiebreaking
+### Tiebreaking
 
-One thing I learned the hard way: fuzzy scores alone aren't enough. When two files have the same score, you need a tiebreaker, and the right tiebreaker is path length. Shorter paths should win because they're usually closer to what you meant — if `config.rs` and `src/utils/old/config.rs` both score 85 for the query `conf`, you almost certainly want the first one.
+One thing to note is that fuzzy scores alone aren't enough. When two files have the same score, you need a tiebreaker. The right tiebreaker is usually path length.
 
 ```rust
 .max_by(|(a_idx, a_score), (b_idx, b_score)| {
@@ -116,12 +123,14 @@ One thing I learned the hard way: fuzzy scores alone aren't enough. When two fil
 })
 ```
 
-The `reverse()` on the length comparison is because we want shorter paths to rank higher, but `max_by` picks the largest value. Without this, the tiebreaker consistently picks the deepest-nested file, which is almost never what you want. I added a final lexicographic comparison too, just so the ordering is fully deterministic — same input always gives same output.
+We reverse the length comparison because we want shorter paths to rank higher. We also add a final lexicographic comparison to ensure the ordering is fully deterministic.
 
-## what I learned
+### Conclusion
 
-The biggest takeaway is that fuzzy matching isn't one thing — it's a family of techniques with different tradeoffs. The scoring heuristics (word boundary bonuses, consecutive bonuses, gap penalties) are where all the magic lives, and they're surprisingly well-tuned in libraries like nucleo. I went in thinking fuzzy matching was basically "substring search but you can skip characters" and came out understanding that the ranking algorithm is the entire product.
+Building this tool taught me that fuzzy matching isn't just one thing — it's a family of techniques with different tradeoffs. The scoring heuristics are where all the magic lives, and they're surprisingly well-tuned in libraries like nucleo. 
 
-I also learned that the Rust ecosystem for this kind of thing is really mature. Between nucleo for fuzzy matching, globset for glob patterns, and git2 for repository interaction, I spent almost no time fighting libraries and almost all my time thinking about the actual logic. That's not always my experience with Rust.
+I also learned that the Rust ecosystem for this kind of thing is really mature. Between nucleo for fuzzy matching, globset for glob patterns, and git2 for repository interaction, I spent almost no time fighting libraries.
 
-The tool itself is simple — it takes query tokens, fuzzy-matches them against your unstaged files, and stages the best match. But building it taught me to stop treating the tools I use every day as black boxes. The next time I open a fuzzy finder and the right file appears at the top, I'll know why.
+Let me know if you guys would be interested in learning more about Rust CLI tools or exploring more advanced applications of fuzzy matching algorithms.
+
+Thank you for reading this and I hope you liked it!

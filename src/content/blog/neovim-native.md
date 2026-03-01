@@ -1,21 +1,45 @@
 ---
 title: "I Deleted My Config to Learn How Neovim Works"
 description: "69 lines, 5 plugins, and I finally understand how my editor works. Here's what I learned reading the docs."
-date: 2024-12-30
+date: 2025-12-20
 ---
 
-I have been a Neovim user for about four years now. Looking back, I realize I was spending more time scrolling through GitHub issues than actually writing code. And when I say I use Neovim, I really mean I use [LazyVim](https://www.lazyvim.org/)—a preconfigured distribution I barely understood. There were times where I knew my setup was broken and I genuinely did not want to open it. It was a chore. I was tired of feeling like my editor was a black box I couldn't fix.
+I've used Neovim for four years.
 
-Then I stumbled upon [this video](https://www.youtube.com/watch?v=xGkL2N8w0H4) by Sylvan Franklin, and I was mesmerized. A 50 line config file! And just by looking at it I could understand every line. It was beautiful, and I wanted that feeling every time I opened neovim. So over christmas break, I deleted my entire config and started from zero.
+And for most of that time, I was terrified of my own editor.
 
-## Starting from Scratch
-Now, why start from zero? It's a little dramatic, I know, but there has been a mindset I've been adopting with all of my tools: don't add anything unless you need it. Whether it was said by [ThePrimeagen](https://www.youtube.com/@ThePrimeagen) or [TJ DeVries](https://www.youtube.com/c/tjdevries), I don't remember, but I've internalized it in everything I do. It solved a lot of the issues I had with spending hours optimizing my setup but never really using it. I wanted to go a step further though, I wanted to write every part of my config. I was tired of looking through [Thorsten Ball's dotfiles](https://github.com/mrnugget/dotfiles), or scrolling through reddit for inspiration. I just wanted 3 things: it always works, it is mine, and it feels great. And as a result of that, I wanted a max of 3 plugins.
+When I say I used Neovim, I really mean I used [LazyVim](https://www.lazyvim.org/)—a massive, preconfigured distribution that I barely understood. It’s a great project, but to me, it was a black box. When my setup broke, I spent more time scrolling through GitHub issues than actually writing code. There were days I dreaded opening my editor.
 
-Neovim 0.11 and 0.12 have shipped a lot of features that used to require plugins, and I wanted to see how far they'd actually take me before I needed anything external. This turned out to be way less about being minimalist and more about learning. I ended up spending a lot of time reading `:help` pages and the Neovim API docs, and I was honestly surprised how far you can go without plugins now.
+Then I stumbled upon [this video](https://www.youtube.com/watch?v=xGkL2N8w0H4) by Sylvan Franklin.
 
-## LSP without `nvim-lspconfig`
+He had a 50-line config file. I could look at it and understand *every single line*. It was beautiful. I wanted that feeling.
 
-Since I had started using Neovim, one of the only requirements besides gruvbox for me was `nvim-lspconfig`. However, in Neovim 0.11, two new interfaces shipped to natively support LSP servers: `vim.lsp.config()` and `vim.lsp.enable()`. Configuring LSPs is so much simpler now. For example, to configure ruby-lsp:
+So over Christmas break, I did something drastic. I deleted my entire config and started from absolute zero.
+
+## Starting From Scratch
+
+Why start from zero? It sounds dramatic, but I've been adopting a new mindset for all my tools: **don't add anything unless you absolutely need it.**
+
+Whether it was said by [ThePrimeagen](https://www.youtube.com/@ThePrimeagen) or [TJ DeVries](https://www.youtube.com/c/tjdevries), I don't remember, but I've internalized it. I’m tired of spending hours optimizing a setup I never actually use. I'm tired of copy-pasting from [Thorsten Ball's dotfiles](https://github.com/mrnugget/dotfiles) or scrolling Reddit for inspiration.
+
+I just wanted three things:
+1. **It always works.**
+2. **It is mine.**
+3. **It feels great.**
+
+My arbitrary constraint to force this? A maximum of 3 plugins.
+
+It turns out Neovim 0.11 and 0.12 have shipped *a lot* of features that used to require plugins. My minimalist experiment quickly turned into a deep dive into the `:help` pages and the Neovim API.
+
+I was genuinely shocked by how far you can go without external plugins today.
+
+## LSP Without `nvim-lspconfig`
+
+Since day one, `nvim-lspconfig` (and a Gruvbox theme) were my only hard requirements.
+
+But in Neovim 0.11, two new interfaces shipped that natively support LSP servers: `vim.lsp.config()` and `vim.lsp.enable()`.
+
+Configuring LSPs is ridiculously simple now. Here is how you configure `ruby-lsp`:
 
 ```lua
 vim.lsp.config.ruby_lsp = {
@@ -27,7 +51,7 @@ vim.lsp.config.ruby_lsp = {
 vim.lsp.enable({'ruby_lsp'})
 ```
 
-Neovim will also scan files on your runtime path for LSP configurations. So the same ruby-lsp example can instead be a file at `~/.config/nvim/lsp/ruby_lsp.lua`:
+Neovim will even scan files on your runtime path for LSP configurations. You can just drop that exact same config into a file at `~/.config/nvim/lsp/ruby_lsp.lua`:
 
 ```lua
 return {
@@ -37,11 +61,13 @@ return {
 }
 ```
 
-Then you only need to call `vim.lsp.enable()` with all the LSP servers you want to use.
+Then, you just call `vim.lsp.enable()` for the servers you want. That's it. No massive plugin required.
 
-## Plugins worth keeping
+## The Plugins Worth Keeping
 
-I wanted to push this further—how much could I actually do with just Neovim's built-in features? The plugin ecosystem is incredible, but I was curious what was possible without it. Although not officially out as of when this post was written, Neovim 0.12 is adding its own package manager, and it is a blast. I never needed the lazy loading feature of [lazy.nvim](https://github.com/folke/lazy.nvim), so using `vim.pack` has been so nice. It's as easy as:
+I wanted to push this further. The Neovim plugin ecosystem is incredible, but what is possible without it?
+
+Neovim 0.12 is adding its own package manager, and it is a blast to use. I realized I never actually needed the lazy-loading features of [lazy.nvim](https://github.com/folke/lazy.nvim). Using the native `vim.pack` is shockingly easy:
 
 ```lua
 vim.pack.add({
@@ -58,12 +84,22 @@ vim.pack.add({
 })
 ```
 
-And there, those are all my plugins! Gruvbox and treesitter are non-negotiable for me. Once you get accustomed to treesitter text objects, there's no going back. mini.pick I added just because it's a small, focused plugin I can understand. And oil.nvim because once you start editing your directories like buffers, a traditional file tree just feels wrong. But if that's all I use, how do I handle diagnostics, completions, and everything else? Well, I learned a couple tricks looking through the docs.
+Those are all my plugins. I failed my 3-plugin limit, but I don't care.
 
-## Some tricks I learned from the docs
-I will go out on a limb and say it: the Neovim API is the best API I have ever worked with. Once I started reading the help pages, I kept finding things that were just built in. Whether it was `vim.diagnostic` or user commands, the docs were a wealth of knowledge. But my favourite part was learning about autocommands, and the events I could hook into for custom behaviour. And honestly, once you understand how to use them, you don't need a lot of plugins.
+- **Gruvbox and Treesitter:** Non-negotiable.
+- **Treesitter Text Objects:** Once you learn them, you can't go back.
+- **mini.pick:** A small, focused fuzzy finder that I can actually understand.
+- **oil.nvim:** Because editing directories like text buffers makes traditional file trees feel fundamentally wrong.
 
-Here is my completions autocmd. It's definitely not an alternative to `nvim-cmp`, but it's amazing I can have my own completion logic so easily. You can hook up the new `vim.lsp.completion` API to an autocmd to get LSP autocompletion built in:
+But if that's all I use, how do I handle diagnostics, completions, and everything else?
+
+## The Neovim API is Incredible
+
+I’ll just say it: the Neovim API is the best API I have ever worked with.
+
+Once I started digging into the help pages, I kept finding built-in solutions. `vim.diagnostic`, user commands, autocommands—the docs are a goldmine. Once you understand how to hook into Neovim's events, you really don't need many plugins.
+
+Here is my custom completion autocmd. It's not `nvim-cmp`, but getting LSP autocompletion built-in is this easy using the new `vim.lsp.completion` API:
 
 ```lua
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -76,7 +112,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 ```
 
-Although this is much more bare-bones than `nvim-cmp`, I haven't missed it once. It has the basic functionality I need. Another good example of autocommands is one I adapted from the [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim/tree/master) repository: yank highlighting.
+It’s bare-bones, but it does exactly what I need. I haven't missed `nvim-cmp` once.
+
+Another great example is yank highlighting, adapted from [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim/tree/master):
 
 ```lua
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -86,7 +124,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 ```
 
-By far the one I use the most is restoring cursor position when reopening a file. I open and close a lot of files when navigating codebases, and I lose my place sometimes in big files. This was always an issue for me in Neovim, but I could never find a plugin for it. Once I understood autocommands, I realized I could just handle it myself:
+But my favorite trick? Restoring the cursor position when reopening a file.
+
+I open and close a lot of files, and losing my place in a massive file was a constant annoyance. I used to look for plugins to solve this. Turns out, I just needed to understand autocommands and buffer marks:
 
 ```lua
 vim.api.nvim_create_autocmd('BufReadPost', {
@@ -99,14 +139,14 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 })
 ```
 
-What surprised me most wasn't just finding these features—it was understanding *why* they work. Reading through the autocommand documentation, I started seeing patterns in how Neovim handles events. The cursor restoration snippet taught me about buffer marks. The completion hook showed me how LSP clients attach to buffers.
+What surprised me the most wasn't finding these features—it was finally understanding *why* they work. The cursor snippet taught me about buffer marks. The completion hook taught me how LSP clients attach to buffers.
 
-Each piece I figured out connected to three more I didn't know existed.
+Every piece I figured out connected to three more things I didn't know existed.
 
 ## 68 Lines
 
-My config is 68 lines. I understand every single one of them.
+My config is now exactly 68 lines.
 
-I ended up with 5 plugins instead of 3, but I'm not mad about it. The whole thing fits in one file, and when something breaks, I know exactly where to look.
+I ended up with 5 plugins instead of 3, but the entire thing fits in one file. More importantly, when something breaks, I know exactly where to look.
 
-For the first time in four years, I actually want to open Neovim.
+For the first time in four years, I actually *want* to open Neovim.
