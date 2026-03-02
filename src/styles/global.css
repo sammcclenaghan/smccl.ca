@@ -366,6 +366,14 @@
   border-color: #404040;
 }
 
+.prose :where(h2) {
+  margin-top: 2.5em;
+}
+
+.prose :where(h3) {
+  margin-top: 2em;
+}
+
 .prose :where(a) {
   @apply no-underline hover:underline decoration-blue-300/50 underline-offset-4;
 }
