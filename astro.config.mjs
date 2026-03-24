@@ -3,6 +3,8 @@ import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 
 import sitemap from "@astrojs/sitemap";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,6 +22,8 @@ export default defineConfig({
     },
   },
   markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
     shikiConfig: {
       themes: {
         light: "github-light",
@@ -29,4 +33,9 @@ export default defineConfig({
   },
   site: "https://samcclenaghan.netlify.app/",
   integrations: [sitemap()],
+  experimental: {
+    queuedRendering: {
+      enabled: true,
+    },
+  },
 });
