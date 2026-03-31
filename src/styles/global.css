@@ -9,41 +9,81 @@
 }
 
 :root {
-  --background: #fff;
-  --foreground: oklch(22% 0.02 45);
-  --secondary: oklch(95% 0.008 85);
-  --muted: oklch(95% 0.008 85);
-  --muted-foreground: oklch(45% 0.015 60);
-  --border: oklch(90% 0.01 85);
-  --light-blue: #60a5fa; /* blue-400 */
-  --dark-blue: #3b82f6; /* blue-500, used for prose links in light mode */
+  /* Kepano-inspired semantic palette — warm paper undertone */
+  --bg1: hsl(40 14% 98%);
+  --bg2: hsl(38 12% 96%);
+  --bg3: hsl(36 12% 93%);
+
+  --tx1: hsl(30 14% 15%);
+  --tx2: hsl(32 8% 38%);
+  --tx3: hsl(32 6% 55%);
+
+  --ui1: hsl(38 12% 88%);
+  --ui2: hsl(38 10% 82%);
+  --ui3: hsl(38 8% 74%);
+
+  --accent: #60a5fa;
+  --accent-strong: #3b82f6;
+  --accent-soft: color-mix(in oklab, var(--accent) 8%, var(--bg1));
+
+  /* Compatibility aliases */
+  --background: var(--bg1);
+  --foreground: var(--tx1);
+  --secondary: var(--bg2);
+  --muted: var(--bg2);
+  --muted-foreground: var(--tx2);
+  --border: var(--ui1);
+  --light-blue: var(--accent);
+  --dark-blue: var(--accent-strong);
   --radius: 0.5rem;
 }
 
 .dark {
-  --background: #1e1e1e;
-  --foreground: #ededed;
-  --secondary: #262626;
-  --muted: #262626;
-  --muted-foreground: #bdbdbd;
-  --border: #262626;
-  --light-blue: #93c5fd; /* blue-300 */
-  --dark-blue: #93c5fd; /* blue-300 */
+  --bg1: hsl(0 0% 15%);
+  --bg2: hsl(30 3% 18%);
+  --bg3: hsl(30 4% 22%);
+
+  --tx1: hsl(36 20% 91%);
+  --tx2: hsl(36 10% 72%);
+  --tx3: hsl(36 8% 58%);
+
+  --ui1: hsl(30 4% 22%);
+  --ui2: hsl(30 5% 28%);
+  --ui3: hsl(30 5% 36%);
+
+  --accent: #93c5fd;
+  --accent-strong: #93c5fd;
+  --accent-soft: color-mix(in oklab, var(--accent) 8%, var(--bg1));
+
+  --background: var(--bg1);
+  --foreground: var(--tx1);
+  --secondary: var(--bg2);
+  --muted: var(--bg2);
+  --muted-foreground: var(--tx2);
+  --border: var(--ui1);
+  --light-blue: var(--accent);
+  --dark-blue: var(--accent-strong);
 }
 
 @theme inline {
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-serif: "IBM Plex Sans", system-ui, sans-serif;
   --font-mono:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
     monospace;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-secondary: var(--secondary);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-light-blue: var(--light-blue);
-  --color-dark-blue: var(--dark-blue);
+  --color-background: var(--bg1);
+  --color-foreground: var(--tx1);
+  --color-secondary: var(--bg2);
+  --color-muted: var(--bg2);
+  --color-muted-foreground: var(--tx2);
+  --color-border: var(--ui1);
+  --color-bg3: var(--bg3);
+  --color-tx3: var(--tx3);
+  --color-ui2: var(--ui2);
+  --color-ui3: var(--ui3);
+  --color-light-blue: var(--accent);
+  --color-dark-blue: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -89,9 +129,9 @@
     line-height: 1;
     padding: 0.125rem 0.375rem;
     border-radius: 0.375rem;
-    border: 1px solid var(--border);
-    background: color-mix(in oklab, var(--muted) 75%, transparent);
-    color: var(--muted-foreground);
+    border: 1px solid var(--ui1);
+    background: color-mix(in oklab, var(--bg2) 75%, transparent);
+    color: var(--tx2);
     opacity: 0;
     transform: translateY(2px);
     transition:
@@ -119,52 +159,75 @@
   }
 }
 
+/* Landing page atmosphere — subtle accent wash */
+.landing-glow::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      40rem 20rem at 10% -5%,
+      color-mix(in oklab, var(--accent) 6%, transparent),
+      transparent 70%
+    );
+  opacity: 0.85;
+}
+
+/* Blog reading: antialiased for comfortable prose */
+.prose-reading {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Prose styling for blog posts */
 .prose {
-  --tw-prose-body: var(--foreground);
-  --tw-prose-headings: var(--foreground);
-  --tw-prose-lead: var(--muted-foreground);
-  --tw-prose-links: var(--dark-blue);
-  --tw-prose-bold: var(--foreground);
-  --tw-prose-counters: var(--muted-foreground);
-  --tw-prose-bullets: var(--muted-foreground);
-  --tw-prose-hr: var(--border);
-  --tw-prose-quotes: var(--foreground);
-  --tw-prose-quote-borders: var(--border);
-  --tw-prose-captions: var(--muted-foreground);
-  --tw-prose-code: var(--foreground);
-  --tw-prose-pre-code: var(--foreground);
-  --tw-prose-pre-bg: color-mix(in oklab, var(--background) 95%, #000 5%);
-  --tw-prose-th-borders: var(--border);
-  --tw-prose-td-borders: var(--border);
+  --tw-prose-body: var(--tx1);
+  --tw-prose-headings: var(--tx1);
+  --tw-prose-lead: var(--tx2);
+  --tw-prose-links: var(--accent-strong);
+  --tw-prose-bold: var(--tx1);
+  --tw-prose-counters: var(--tx2);
+  --tw-prose-bullets: var(--tx3);
+  --tw-prose-hr: var(--ui1);
+  --tw-prose-quotes: var(--tx1);
+  --tw-prose-quote-borders: var(--ui2);
+  --tw-prose-captions: var(--tx3);
+  --tw-prose-code: var(--tx1);
+  --tw-prose-pre-code: var(--tx1);
+  --tw-prose-pre-bg: var(--bg2);
+  --tw-prose-th-borders: var(--ui1);
+  --tw-prose-td-borders: var(--ui1);
 
-  --tw-prose-invert-body: var(--foreground);
-  --tw-prose-invert-headings: var(--foreground);
-  --tw-prose-invert-lead: var(--muted-foreground);
-  --tw-prose-invert-links: var(--light-blue);
-  --tw-prose-invert-bold: var(--foreground);
-  --tw-prose-invert-counters: var(--muted-foreground);
-  --tw-prose-invert-bullets: var(--muted-foreground);
-  --tw-prose-invert-hr: var(--border);
-  --tw-prose-invert-quotes: var(--foreground);
-  --tw-prose-invert-quote-borders: var(--border);
-  --tw-prose-invert-captions: var(--muted-foreground);
-  --tw-prose-invert-code: var(--foreground);
-  --tw-prose-invert-pre-code: var(--foreground);
-  --tw-prose-invert-pre-bg: var(--background);
-  --tw-prose-invert-th-borders: var(--border);
-  --tw-prose-invert-td-borders: var(--border);
+  --tw-prose-invert-body: var(--tx1);
+  --tw-prose-invert-headings: var(--tx1);
+  --tw-prose-invert-lead: var(--tx2);
+  --tw-prose-invert-links: var(--accent);
+  --tw-prose-invert-bold: var(--tx1);
+  --tw-prose-invert-counters: var(--tx2);
+  --tw-prose-invert-bullets: var(--tx3);
+  --tw-prose-invert-hr: var(--ui1);
+  --tw-prose-invert-quotes: var(--tx1);
+  --tw-prose-invert-quote-borders: var(--ui2);
+  --tw-prose-invert-captions: var(--tx3);
+  --tw-prose-invert-code: var(--tx1);
+  --tw-prose-invert-pre-code: var(--tx1);
+  --tw-prose-invert-pre-bg: var(--bg2);
+  --tw-prose-invert-th-borders: var(--ui1);
+  --tw-prose-invert-td-borders: var(--ui1);
 }
 
 .prose :where(code):not(:where(pre *)) {
-  @apply bg-muted px-1.5 py-0.5 rounded-sm text-sm font-normal border border-border/50;
-  background-color: color-mix(in oklab, var(--background) 95%, #000 5%);
+  @apply px-1.5 py-0.5 rounded-sm text-sm font-normal;
+  background-color: var(--bg3);
+  border: 1px solid var(--ui1);
 }
 
 .dark .prose :where(code):not(:where(pre *)) {
-  background-color: #262626;
-  color: #e5e5e5;
-  border-color: #404040;
+  background-color: var(--bg3);
+  color: var(--tx1);
+  border-color: var(--ui2);
 }
 
 .prose :where(code):not(:where(pre *))::before,
@@ -173,13 +236,14 @@
 }
 
 .prose :where(pre) {
-  @apply rounded-lg border border-border/40;
-  background-color: var(--tw-prose-pre-bg) !important;
+  @apply rounded-lg;
+  background-color: var(--bg2) !important;
+  border: 1px solid var(--ui1);
 }
 
 .dark .prose :where(pre) {
-  background-color: var(--tw-prose-invert-pre-bg) !important;
-  border-color: #404040;
+  background-color: var(--bg2) !important;
+  border-color: var(--ui2);
 }
 
 .prose :where(h2) {
@@ -191,5 +255,11 @@
 }
 
 .prose :where(a) {
-  @apply no-underline hover:underline decoration-light-blue/50 underline-offset-4;
+  @apply no-underline hover:underline decoration-light-blue/40 underline-offset-4;
+}
+
+.prose :where(blockquote) {
+  border-left-width: 2px;
+  border-left-color: var(--ui2);
+  font-style: normal;
 }
