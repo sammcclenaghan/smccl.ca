@@ -17,17 +17,20 @@
           class="email-popover"
         >
           <button id="email-copy" class="email-popover-item" type="button">
-            <span class="email-copy-default">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              copy
-            </span>
-            <svg class="email-check" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline class="email-check-path" points="20 6 9 17 4 12"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            copy
           </button>
           <div class="email-popover-divider"></div>
-          <a href="mailto:sam@aream.ca" class="email-popover-item">
+          <a id="email-mail" href="mailto:sam@aream.ca" class="email-popover-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             <span>open mail</span>
           </a>
+          <div class="email-confirm-overlay email-confirm-copied">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline class="email-check-path" points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div class="email-confirm-overlay email-confirm-sent">
+            <svg class="email-plane" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line class="email-plane-line" x1="22" y1="2" x2="11" y2="13"></line><polygon class="email-plane-body" points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </div>
         </div>
       </span>
       <span class="text-ui2">·</span>
@@ -114,172 +117,80 @@
     </div>
   </div>
 
-  <script>
-    (() => {
-      type ThemeMode = "light" | "dark" | "system";
-      const STORAGE_KEY = "theme";
-      const THEME_LIGHT = "light";
-      const THEME_DARK = "dark";
-      const THEME_SYSTEM = "system";
-      const DEFAULT_THEME: ThemeMode = THEME_SYSTEM;
-
-      const docEl = document.documentElement;
-      const media = window.matchMedia("(prefers-color-scheme: dark)");
-
-      function getStoredTheme(): ThemeMode {
-        const value = localStorage.getItem(STORAGE_KEY);
-        return value === THEME_LIGHT ||
-          value === THEME_DARK ||
-          value === THEME_SYSTEM
-          ? (value as ThemeMode)
-          : DEFAULT_THEME;
-      }
-
-      function getTheme(): ThemeMode {
-        const mode = getStoredTheme();
-        if (localStorage.getItem(STORAGE_KEY) !== mode) {
-          localStorage.setItem(STORAGE_KEY, mode);
-        }
-        return mode;
-      }
-
-      function systemPrefersDark(): boolean {
-        return media.matches;
-      }
-
-      function computeIsDark(mode: ThemeMode): boolean {
-        return (
-          mode === THEME_DARK || (mode === THEME_SYSTEM && systemPrefersDark())
-        );
-      }
-
-      function applyTheme(mode: ThemeMode): void {
-        const isDark = computeIsDark(mode);
-        docEl.classList.toggle("dark", isDark);
-        docEl.dataset.theme = mode;
-      }
-
-      function updateButtonsActive(mode: ThemeMode): void {
-        const buttons = document.querySelectorAll("button[data-theme]");
-        buttons.forEach((btn: Element) => {
-          const isActive =
-            (btn.getAttribute("data-theme") as ThemeMode | null) === mode;
-          btn.setAttribute("aria-pressed", String(isActive));
-        });
-      }
-
-      function setTheme(mode: ThemeMode): void {
-        localStorage.setItem(STORAGE_KEY, mode);
-        if (document.startViewTransition) {
-          document.startViewTransition(() => applyTheme(mode));
-        } else {
-          applyTheme(mode);
-        }
-        updateButtonsActive(mode);
-      }
-
-      function wireButtons(): void {
-        const buttons = document.querySelectorAll("button[data-theme]");
-        buttons.forEach((btn: Element) => {
-          (btn as HTMLElement).addEventListener("click", () => {
-            const modeAttr = btn.getAttribute("data-theme") as ThemeMode | null;
-            if (modeAttr) setTheme(modeAttr);
-          });
-        });
-      }
-
-      // Keep system mode in sync with OS changes
-      media.addEventListener("change", () => {
-        if (getTheme() === THEME_SYSTEM) {
-          applyTheme(THEME_SYSTEM);
-        }
-      });
-
-      // Ensure correct theme is applied to the incoming document before swap to avoid flash
-      document.addEventListener("astro:before-swap", (event) => {
-        const mode = getTheme();
-        const newDoc = event.newDocument;
-        const html = newDoc.documentElement;
-        const isDark = computeIsDark(mode);
-        html.classList.toggle("dark", isDark);
-        html.dataset.theme = mode;
-      });
-
-      // Re-wire buttons on each page load under SPA navigation
-      document.addEventListener("astro:page-load", () => {
-        const mode = getTheme();
-        applyTheme(mode);
-        wireButtons();
-        updateButtonsActive(mode);
-      });
-
-      // Initial setup
-      const initialMode = getTheme();
-      applyTheme(initialMode);
-      wireButtons();
-      updateButtonsActive(initialMode);
-    })();
-
-    // Email popover
+  <script is:inline src="/scripts/footer.js"></script>
+  <script is:inline>
     (() => {
       const EMAIL = "sam@aream.ca";
 
-      function wireEmailPopover(): void {
+      function wireEmailPopover() {
         const trigger = document.getElementById("email-trigger");
         const popover = document.getElementById("email-popover");
         const copyBtn = document.getElementById("email-copy");
-        if (!trigger || !popover || !copyBtn) return;
+        const mailLink = document.getElementById("email-mail");
+        if (!trigger || !popover || !copyBtn || !mailLink) return;
 
-        // Animated close: add .closing, wait for transition, then actually hide
-        function closePopover(): void {
+        function closePopover() {
           if (!popover.matches(":popover-open")) return;
           popover.classList.add("closing");
           popover.addEventListener("transitionend", () => {
             popover.classList.remove("closing");
-            popover.hidePopover();
+            if (popover.matches(":popover-open")) {
+              popover.hidePopover();
+            }
           }, { once: true });
         }
 
-        // Position popover above the trigger on toggle (fixed positioning, viewport coords)
-        popover.addEventListener("toggle", (e: Event) => {
-          const ev = e as ToggleEvent;
-          if (ev.newState === "open") {
-            requestAnimationFrame(() => {
-              const rect = trigger.getBoundingClientRect();
-              const ph = popover.offsetHeight;
-              const pw = popover.offsetWidth;
-              popover.style.top = `${rect.top - ph - 8}px`;
-              popover.style.left = `${rect.left + rect.width / 2 - pw / 2}px`;
-            });
-          }
+        popover.addEventListener("toggle", (event) => {
+          if (event.newState !== "open") return;
+          requestAnimationFrame(() => {
+            const rect = trigger.getBoundingClientRect();
+            const popoverHeight = popover.offsetHeight;
+            const popoverWidth = popover.offsetWidth;
+            popover.style.top = `${rect.top - popoverHeight - 8}px`;
+            popover.style.left = `${rect.left + rect.width / 2 - popoverWidth / 2}px`;
+          });
         });
 
-        // Dismiss after cursor leaves trigger + popover for a beat
-        let dismissTimer: ReturnType<typeof setTimeout> | null = null;
-        const DELAY = 400;
-
-        function clearDismiss() {
-          if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
-        }
-        function startDismiss() {
+        let dismissTimer = null;
+        const clearDismiss = () => {
+          if (dismissTimer) {
+            clearTimeout(dismissTimer);
+            dismissTimer = null;
+          }
+        };
+        const scheduleDismiss = () => {
           clearDismiss();
-          dismissTimer = setTimeout(closePopover, DELAY);
-        }
+          dismissTimer = setTimeout(closePopover, 400);
+        };
 
-        trigger.addEventListener("mouseleave", startDismiss);
         trigger.addEventListener("mouseenter", clearDismiss);
-        popover.addEventListener("mouseleave", startDismiss);
+        trigger.addEventListener("mouseleave", scheduleDismiss);
         popover.addEventListener("mouseenter", clearDismiss);
+        popover.addEventListener("mouseleave", scheduleDismiss);
 
         copyBtn.addEventListener("click", async () => {
           try {
             await navigator.clipboard.writeText(EMAIL);
-            copyBtn.classList.add("copied");
+            popover.classList.add("copied");
             setTimeout(() => {
-              copyBtn.classList.remove("copied");
+              popover.classList.remove("copied");
               closePopover();
-            }, 900);
-          } catch {}
+            }, 1000);
+          } catch {
+            // Clipboard access can fail in unsupported contexts.
+          }
+        });
+
+        mailLink.addEventListener("click", (event) => {
+          event.preventDefault();
+          popover.classList.add("sent");
+          setTimeout(() => {
+            window.location.href = mailLink.href;
+          }, 350);
+          setTimeout(() => {
+            popover.classList.remove("sent");
+            closePopover();
+          }, 1000);
         });
       }
 
