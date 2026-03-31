@@ -2,6 +2,7 @@
 title: "Building Your Own Resume in Typst"
 description: "I got tired of editing LaTeX templates I didn't understand. So I learned Typst and built my resume from scratch."
 date: 2025-01-15
+math: true
 ---
 
 I decided to update my resume today, just for fun. I originally wrote it in [Overleaf](https://www.overleaf.com/), the $\LaTeX$ compiler, but for a while I've been meaning to rewrite it on my own system so I can easily access it without an internet connection and be able to check it in to version-control.

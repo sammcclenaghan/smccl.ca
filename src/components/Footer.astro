@@ -3,11 +3,41 @@
 ---
 
 <footer class="animate">
-  <div class="flex justify-between items-center pt-24">
-    <div class="text-sm text-muted-foreground">
-      &copy; 2026 {`|`} Sam McClenaghan
+  <div class="flex items-center justify-between pt-24 gap-4">
+    <div class="flex items-center gap-3 text-sm text-tx3">
+      <span class="relative">
+        <button
+          id="email-trigger"
+          popovertarget="email-popover"
+          class="hover:text-foreground transition-colors duration-200 cursor-pointer"
+        >email</button>
+        <div
+          id="email-popover"
+          popover
+          class="email-popover"
+        >
+          <button id="email-copy" class="email-popover-item" type="button">
+            <span class="email-copy-default">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              copy
+            </span>
+            <svg class="email-check" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline class="email-check-path" points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+          <div class="email-popover-divider"></div>
+          <a href="mailto:sam@aream.ca" class="email-popover-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>open mail</span>
+          </a>
+        </div>
+      </span>
+      <span class="text-ui2">·</span>
+      <a href="https://github.com/sammcclenaghan" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors duration-200">github</a>
+      <span class="text-ui2">·</span>
+      <a href="https://www.linkedin.com/in/sam-mcclenaghan" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors duration-200">linkedin</a>
+      <span class="text-ui2">·</span>
+      <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors duration-200">resume</a>
     </div>
-    <div class="flex flex-wrap gap-1 items-center">
+    <div class="flex flex-wrap gap-1 items-center shrink-0">
       <button
         data-theme="light"
         aria-label="Light theme"
@@ -188,6 +218,73 @@
       applyTheme(initialMode);
       wireButtons();
       updateButtonsActive(initialMode);
+    })();
+
+    // Email popover
+    (() => {
+      const EMAIL = "sam@aream.ca";
+
+      function wireEmailPopover(): void {
+        const trigger = document.getElementById("email-trigger");
+        const popover = document.getElementById("email-popover");
+        const copyBtn = document.getElementById("email-copy");
+        if (!trigger || !popover || !copyBtn) return;
+
+        // Animated close: add .closing, wait for transition, then actually hide
+        function closePopover(): void {
+          if (!popover.matches(":popover-open")) return;
+          popover.classList.add("closing");
+          popover.addEventListener("transitionend", () => {
+            popover.classList.remove("closing");
+            popover.hidePopover();
+          }, { once: true });
+        }
+
+        // Position popover above the trigger on toggle (fixed positioning, viewport coords)
+        popover.addEventListener("toggle", (e: Event) => {
+          const ev = e as ToggleEvent;
+          if (ev.newState === "open") {
+            requestAnimationFrame(() => {
+              const rect = trigger.getBoundingClientRect();
+              const ph = popover.offsetHeight;
+              const pw = popover.offsetWidth;
+              popover.style.top = `${rect.top - ph - 8}px`;
+              popover.style.left = `${rect.left + rect.width / 2 - pw / 2}px`;
+            });
+          }
+        });
+
+        // Dismiss after cursor leaves trigger + popover for a beat
+        let dismissTimer: ReturnType<typeof setTimeout> | null = null;
+        const DELAY = 400;
+
+        function clearDismiss() {
+          if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
+        }
+        function startDismiss() {
+          clearDismiss();
+          dismissTimer = setTimeout(closePopover, DELAY);
+        }
+
+        trigger.addEventListener("mouseleave", startDismiss);
+        trigger.addEventListener("mouseenter", clearDismiss);
+        popover.addEventListener("mouseleave", startDismiss);
+        popover.addEventListener("mouseenter", clearDismiss);
+
+        copyBtn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(EMAIL);
+            copyBtn.classList.add("copied");
+            setTimeout(() => {
+              copyBtn.classList.remove("copied");
+              closePopover();
+            }, 900);
+          } catch {}
+        });
+      }
+
+      wireEmailPopover();
+      document.addEventListener("astro:page-load", wireEmailPopover);
     })();
   </script>
 </footer>

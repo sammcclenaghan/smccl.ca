@@ -1,76 +1,37 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
-.prose .katex-display {
-  @apply text-foreground;
-}
-
 :root {
-  /* Kepano-inspired semantic palette — warm paper undertone */
   --bg1: hsl(40 14% 98%);
   --bg2: hsl(38 12% 96%);
   --bg3: hsl(36 12% 93%);
-
   --tx1: hsl(30 14% 15%);
   --tx2: hsl(32 8% 38%);
   --tx3: hsl(32 6% 55%);
-
   --ui1: hsl(38 12% 88%);
   --ui2: hsl(38 10% 82%);
-  --ui3: hsl(38 8% 74%);
-
   --accent: #60a5fa;
   --accent-strong: #3b82f6;
-  --accent-soft: color-mix(in oklab, var(--accent) 8%, var(--bg1));
-
-  /* Compatibility aliases */
-  --background: var(--bg1);
-  --foreground: var(--tx1);
-  --secondary: var(--bg2);
-  --muted: var(--bg2);
-  --muted-foreground: var(--tx2);
-  --border: var(--ui1);
-  --light-blue: var(--accent);
-  --dark-blue: var(--accent-strong);
-  --radius: 0.5rem;
 }
 
 .dark {
   --bg1: hsl(0 0% 15%);
   --bg2: hsl(30 3% 18%);
   --bg3: hsl(30 4% 22%);
-
   --tx1: hsl(36 20% 91%);
   --tx2: hsl(36 10% 72%);
   --tx3: hsl(36 8% 58%);
-
   --ui1: hsl(30 4% 22%);
   --ui2: hsl(30 5% 28%);
-  --ui3: hsl(30 5% 36%);
-
   --accent: #93c5fd;
   --accent-strong: #93c5fd;
-  --accent-soft: color-mix(in oklab, var(--accent) 8%, var(--bg1));
-
-  --background: var(--bg1);
-  --foreground: var(--tx1);
-  --secondary: var(--bg2);
-  --muted: var(--bg2);
-  --muted-foreground: var(--tx2);
-  --border: var(--ui1);
-  --light-blue: var(--accent);
-  --dark-blue: var(--accent-strong);
 }
 
 @theme inline {
   --font-sans: "IBM Plex Sans", system-ui, sans-serif;
-  --font-serif: "IBM Plex Sans", system-ui, sans-serif;
-  --font-mono:
-    "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-    monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   --color-background: var(--bg1);
   --color-foreground: var(--tx1);
   --color-secondary: var(--bg2);
@@ -80,48 +41,36 @@
   --color-bg3: var(--bg3);
   --color-tx3: var(--tx3);
   --color-ui2: var(--ui2);
-  --color-ui3: var(--ui3);
   --color-light-blue: var(--accent);
   --color-dark-blue: var(--accent-strong);
-  --color-accent-soft: var(--accent-soft);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Dark mode code syntax highlighting */
+/* Dark mode Shiki */
 .dark .astro-code,
 .dark .astro-code span {
   color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
   font-style: var(--shiki-dark-font-style) !important;
   font-weight: var(--shiki-dark-font-weight) !important;
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
+.dark .astro-code { background-color: var(--bg2) !important; }
+.dark .astro-code span { background-color: transparent !important; }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-sans;
-  }
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground font-sans; }
 
   .animate {
     @apply opacity-0 translate-y-3;
-    animation: fadeInUp 0.5s ease-out forwards;
-    animation-delay: calc(var(--i, 0) * 0.1s);
+    animation: fadeInUp 0.35s ease-out forwards;
+    animation-delay: calc(var(--i, 0) * 0.07s);
   }
 
-  /* Keyboard shortcut keycap on nav links */
   .nav-button[aria-keyshortcuts] {
     position: relative;
     display: inline-flex;
     align-items: center;
   }
-
   .nav-button[aria-keyshortcuts]::after {
     content: attr(aria-keyshortcuts);
     margin-left: 0.375rem;
@@ -134,12 +83,9 @@
     color: var(--tx2);
     opacity: 0;
     transform: translateY(2px);
-    transition:
-      opacity 300ms ease,
-      transform 300ms ease;
+    transition: opacity 300ms ease, transform 300ms ease;
     pointer-events: none;
   }
-
   .nav-button[aria-keyshortcuts]:hover::after,
   .nav-button[aria-keyshortcuts]:focus-visible::after,
   .nav-button[aria-keyshortcuts].keycap-visible::after {
@@ -149,39 +95,34 @@
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
+    animation: none;
   }
 }
 
-/* Landing page atmosphere — subtle accent wash */
 .landing-glow::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(
-      40rem 20rem at 10% -5%,
-      color-mix(in oklab, var(--accent) 6%, transparent),
-      transparent 70%
-    );
+  background: radial-gradient(40rem 20rem at 10% -5%, color-mix(in oklab, var(--accent) 6%, transparent), transparent 70%);
   opacity: 0.85;
 }
 
-/* Blog reading: antialiased for comfortable prose */
 .prose-reading {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Prose styling for blog posts */
+/* Prose — wire typography plugin to our palette */
 .prose {
   --tw-prose-body: var(--tx1);
   --tw-prose-headings: var(--tx1);
@@ -199,23 +140,6 @@
   --tw-prose-pre-bg: var(--bg2);
   --tw-prose-th-borders: var(--ui1);
   --tw-prose-td-borders: var(--ui1);
-
-  --tw-prose-invert-body: var(--tx1);
-  --tw-prose-invert-headings: var(--tx1);
-  --tw-prose-invert-lead: var(--tx2);
-  --tw-prose-invert-links: var(--accent);
-  --tw-prose-invert-bold: var(--tx1);
-  --tw-prose-invert-counters: var(--tx2);
-  --tw-prose-invert-bullets: var(--tx3);
-  --tw-prose-invert-hr: var(--ui1);
-  --tw-prose-invert-quotes: var(--tx1);
-  --tw-prose-invert-quote-borders: var(--ui2);
-  --tw-prose-invert-captions: var(--tx3);
-  --tw-prose-invert-code: var(--tx1);
-  --tw-prose-invert-pre-code: var(--tx1);
-  --tw-prose-invert-pre-bg: var(--bg2);
-  --tw-prose-invert-th-borders: var(--ui1);
-  --tw-prose-invert-td-borders: var(--ui1);
 }
 
 .prose :where(code):not(:where(pre *)) {
@@ -223,17 +147,8 @@
   background-color: var(--bg3);
   border: 1px solid var(--ui1);
 }
-
-.dark .prose :where(code):not(:where(pre *)) {
-  background-color: var(--bg3);
-  color: var(--tx1);
-  border-color: var(--ui2);
-}
-
 .prose :where(code):not(:where(pre *))::before,
-.prose :where(code):not(:where(pre *))::after {
-  content: "";
-}
+.prose :where(code):not(:where(pre *))::after { content: ""; }
 
 .prose :where(pre) {
   @apply rounded-lg;
@@ -241,25 +156,101 @@
   border: 1px solid var(--ui1);
 }
 
-.dark .prose :where(pre) {
-  background-color: var(--bg2) !important;
-  border-color: var(--ui2);
-}
-
-.prose :where(h2) {
-  margin-top: 2.5em;
-}
-
-.prose :where(h3) {
-  margin-top: 2em;
-}
-
 .prose :where(a) {
   @apply no-underline hover:underline decoration-light-blue/40 underline-offset-4;
 }
 
-.prose :where(blockquote) {
-  border-left-width: 2px;
-  border-left-color: var(--ui2);
-  font-style: normal;
+.prose .katex-display { @apply text-foreground; }
+
+/* Email popover */
+.email-popover {
+  position: fixed;
+  inset: unset;
+  margin: 0;
+  padding: 0.25rem;
+  border: 1px solid var(--ui1);
+  border-radius: 0.5rem;
+  background: var(--bg2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  align-items: center;
+  gap: 0.125rem;
+  white-space: nowrap;
+  transform-origin: bottom center;
+  opacity: 0;
+  transform: translateY(4px) scale(0.95);
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              overlay 200ms allow-discrete,
+              display 200ms allow-discrete;
+}
+.email-popover:popover-open {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.email-popover.closing {
+  opacity: 0;
+  transform: translateY(4px) scale(0.92);
+}
+@starting-style {
+  .email-popover:popover-open {
+    opacity: 0;
+    transform: translateY(4px) scale(0.92);
+  }
+}
+.dark .email-popover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.email-popover-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--tx2);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+.email-popover-item:hover {
+  background: var(--bg3);
+  color: var(--tx1);
+}
+.email-popover-divider {
+  width: 1px;
+  height: 1rem;
+  background: var(--ui1);
+  flex-shrink: 0;
+}
+.email-copy-default {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: opacity 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.email-check {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  opacity: 0;
+  color: var(--accent-strong);
+  transition: opacity 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.email-check-path {
+  stroke-dasharray: 28;
+  stroke-dashoffset: 28;
+}
+.copied .email-copy-default {
+  opacity: 0;
+}
+.copied .email-check {
+  opacity: 1;
+}
+.copied .email-check-path {
+  animation: email-draw 350ms 50ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes email-draw {
+  to { stroke-dashoffset: 0; }
 }

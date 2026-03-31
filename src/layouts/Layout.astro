@@ -10,6 +10,7 @@ interface Props {
   image?: string;
   type?: "website" | "article";
   publishedDate?: Date;
+  math?: boolean;
 }
 
 const {
@@ -18,10 +19,11 @@ const {
   image = "/og-image.png",
   type = "website",
   publishedDate,
+  math = false,
 } = Astro.props;
 
 const siteName = "Sam McClenaghan";
-const siteUrl = "https://samcclenaghan.netlify.app";
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const pageTitle = title ? `${title} | ${siteName}` : siteName;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(image, Astro.site);
@@ -112,17 +114,19 @@ const articleSchema =
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
 
-    <!-- Fonts: Instrument Serif (display) + IBM Plex Sans (body) + IBM Plex Mono (code) -->
+    <!-- Fonts: IBM Plex Sans (body) + IBM Plex Mono (code) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
-    />
+    {math && (
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
+      />
+    )}
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />

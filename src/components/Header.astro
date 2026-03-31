@@ -44,26 +44,6 @@
     });
   }
 
-  // Show keycap from sessionStorage (persist across navigation)
-  function showKeycapFromStorage() {
-    const section = sessionStorage.getItem("keycap:section");
-    const untilStr = sessionStorage.getItem("keycap:until");
-    const until = untilStr ? parseInt(untilStr, 10) : 0;
-    if (section && until > Date.now()) {
-      const link = document.querySelector<HTMLAnchorElement>(
-        `a[data-section="${section}"]`,
-      );
-      if (link) {
-        link.classList.add("keycap-visible");
-        const remaining = Math.max(0, until - Date.now());
-        window.setTimeout(
-          () => link.classList.remove("keycap-visible"),
-          remaining,
-        );
-      }
-    }
-  }
-
   // Prepare stagger on the incoming document before swap
   function applySequentialFadeForDocument(doc: Document) {
     const elements = doc.querySelectorAll<HTMLElement>(".animate");
@@ -73,19 +53,10 @@
   }
 
   // Initialize on page load and navigation
-  document.addEventListener("DOMContentLoaded", () => {
-    applySequentialFade();
-    showKeycapFromStorage();
-  });
-  document.addEventListener("astro:page-load", () => {
-    applySequentialFade();
-    showKeycapFromStorage();
-  });
+  document.addEventListener("DOMContentLoaded", applySequentialFade);
+  document.addEventListener("astro:page-load", applySequentialFade);
 
-  // Also re-assert after swap completes
   document.addEventListener("astro:after-swap", () => {
-    showKeycapFromStorage();
-    // Remove focus after SPA swap so focus ring doesn't remain
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
