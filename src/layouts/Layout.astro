@@ -60,7 +60,7 @@ const articleSchema =
   type === "article" && title && publishedDate
     ? {
         "@context": "https://schema.org",
-        "@type": "BlogPosting",
+        "@type": "Article",
         headline: title,
         description: description,
         url: canonicalURL.toString(),
@@ -146,7 +146,7 @@ const articleSchema =
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
 
-    <!-- Article-specific meta (for blog posts) -->
+    <!-- Article-specific meta -->
     {
       type === "article" && publishedDate && (
         <meta

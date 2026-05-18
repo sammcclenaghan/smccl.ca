@@ -36,7 +36,7 @@ function handleKeydown(event) {
 
   const section = {
     h: "home",
-    b: "blog",
+    w: "writing",
     p: "projects",
   }[event.key.toLowerCase()];
 

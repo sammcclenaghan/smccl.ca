@@ -1,38 +1,36 @@
 ---
-title: "Letting an LLM Touch Your Filesystem"
-description: "What happens when you give a language model the ability to run shell commands, and how containers make it less terrifying."
+title: "Learning Why AI Agents Need Sandboxes"
+description: "A small experiment with LLM-generated shell commands, inspired by Nanoclaw and the old maid gem."
 date: 2026-02-16
 ---
 
-Imagine giving an LLM the ability to run shell commands on your actual machine.
+I started thinking about this after reading [Nanoclaw](https://github.com/nanocoai/nanoclaw).
 
-Not hypothetically. I mean literally wiring up a function that takes a string from the model and passes it directly to `bash -c`.
+The idea that stuck with me was simple: if an agent can run shell commands, it should run them inside a container.
+
+Nanoclaw uses that pattern to give agents real tools without giving them the whole host machine.
+
+I wanted to understand that pattern better, so I built a much smaller experiment.
+
+The old Ruby gem `maid` let you write rules for cleaning up files. I wanted to make a tiny LLM version of that.
+
+So I built [mildred](https://github.com/sammcclenaghan/mildred), a command-line maid for your filesystem.
+
+You describe file organization rules in English, and an LLM figures out the shell commands to make them happen.
+
+That immediately creates a safety problem.
+
+Imagine giving an LLM the ability to run shell commands on your actual machine.
 
 The model decides what to run. Your code executes it.
 
-This is terrifying.
+That is a pretty strange thing to trust.
 
-LLMs hallucinate. They confidently generate plausible-looking commands that do the exact wrong thing. `rm -rf /` is literally one bad inference away. And unlike a regular bug where you can read the code and trace the logic, the "logic" here is a neural network that decided `mv` wasn't quite right and maybe deleting your root directory was a cleaner start.
+## The Boundary
 
-I ran into this exact problem while building [mildred](https://github.com/sammcclenaghan/mildred). It's a CLI tool where you describe file organization rules in English, and an LLM figures out the shell commands to make it happen. 
+Modern LLMs can use tools. You define a function, and the model decides when to call it and what arguments to pass.
 
-The interesting part wasn't the file organization. It was figuring out how to let an LLM touch my filesystem without losing sleep over it.
-
-## Tool Calling is the Interface
-
-Modern LLMs don't just generate text anymore. They request actions through "tool calling."
-
-You define tools (functions), and the model decides when to call them and what arguments to pass. The model *never* executes anything directly. It says, "I'd like to run this command," and your code decides whether to actually do it.
-
-I'm using `ruby_llm`, which gives you a brilliantly clean interface for this:
-
-```ruby
-chat = RubyLLM.chat(model: "llama3.1:8b")
-chat.with_tool(Mildred::Tools::RunCommand)
-response = chat.say("Organize the files in #{directory}")
-```
-
-That `RunCommand` tool is the scary part. It's just a class that takes whatever command the LLM hallucinated and passes it straight to bash:
+In Mildred, the important tool is `RunCommand`:
 
 ```ruby
 class RunCommand < RubyLLM::Tool
@@ -46,40 +44,19 @@ class RunCommand < RubyLLM::Tool
 end
 ```
 
-This is the entire trust boundary. Everything after this is about making that `execute` method less dangerous.
+That `execute` method is the trust boundary. The model asks for a command. My code decides whether and where to run it.
 
-## The First Line of Defense: Noop Mode
+At first, I added a noop mode. Instead of executing the command, Mildred can print what it would run.
 
-The absolute simplest thing you can do is let people see what would happen before it happens. A dry run. 
+That is useful, but it is not real isolation.
 
-Instead of executing the command, you just print it out.
+If I actually want the LLM to move files, I need a safer place for those commands to run.
 
-I needed a way to track whether we're in noop mode across the whole application, without threading a massive flag through every single method signature. In Rails, I'd use `CurrentAttributes` for this. 
+## The Sandbox
 
-Turns out you can just use ActiveSupport outside of Rails:
+This is where the Nanoclaw idea clicked for me.
 
-```ruby
-require "active_support"
-require "active_support/current_attributes"
-
-module Mildred
-  class Current < ActiveSupport::CurrentAttributes
-    attribute :container_id, :noop, :job_name
-  end
-end
-```
-
-Now anywhere in the code, I check `Mildred::Current.noop`. It's thread-safe and resets between test runs. It keeps method signatures incredibly clean.
-
-But noop mode only helps when someone remembers to use it. And it doesn't protect you when you *do* want the LLM to execute commands, just not destructive ones.
-
-For that, you need actual isolation.
-
-## The Real Solution: Containers
-
-The answer I landed on was running every LLM-generated command inside a container.
-
-Not Docker. Apple containers. These are lightweight Linux VMs natively available on macOS. The key insight is mount-based isolation. You explicitly specify which directories the container can see. Everything else simply doesn't exist.
+Run the command in a container, and only mount the directories the tool should touch.
 
 ```ruby
 def run_container
@@ -91,40 +68,16 @@ def run_container
 end
 ```
 
-If the LLM generates `rm -rf /`, who cares? The root filesystem is a disposable Alpine Linux image.
+If the LLM generates a bad command, the damage is limited to the mounted workspace.
 
-Your actual files are only accessible through the mounts you explicitly set up. The LLM can see your `~/Downloads` folder if you mount it, but it physically cannot see `~/.ssh` or `/etc`.
+It cannot see my whole home directory. It cannot reach `~/.ssh`. It cannot accidentally delete files I never mounted.
 
-I don't have to parse or validate every command the LLM generates (which is basically impossible anyway). I just change the environment so that destructive commands can't reach anything important.
+I also get a predictable environment. The model is always writing commands for the same small Linux image.
 
-## Why Containers Feel Obvious Now
+That was the main thing I learned.
 
-Once I had this working, I realized it solved more than just safety.
+The hard part was not asking an LLM to generate shell commands. That part is easy.
 
-The environment is identical every single run. Alpine Linux with bash, coreutils, and findutils. There are no "works on my machine" problems because it's not running on my machine.
+The hard part was deciding where trust ends.
 
-This also makes the LLM's job significantly easier.
-
-The model doesn't have to guess whether the system has `find` with GNU extensions or BSD `find`. It's always Alpine. The prompts can be more specific, and the commands are infinitely more predictable.
-
-The overhead is basically zero. Alpine images are tiny, and container startup takes less than a second. If I'm already waiting several seconds for an LLM to generate a response, the container setup time is literally noise.
-
-I'm honestly surprised more developer tools don't do this. The safety guarantee is almost free.
-
-## Trust Boundaries in AI
-
-Working on this fundamentally changed how I think about LLM integration.
-
-The temptation is to treat an LLM like a function. Input goes in, output comes out, trust the output. 
-
-**LLMs aren't functions.** They are probabilistic systems that sometimes generate confident, plausible, completely wrong answers.
-
-The useful mental model is defense in depth. Noop mode catches mistakes during development. Containers prevent damage in production. Neither is perfect on its own, but layered together, they make the tool genuinely usable without constant anxiety.
-
-The broader lesson is about where you draw the trust boundary. With traditional code, you trust yourself. With an LLM, you're trusting a model that might do something completely unhinged on any given run.
-
-The answer isn't to stop using LLMs. It's to design your system so that "unexpected" can't mean "catastrophic." 
-
-The LLM can be creative, hallucinate, and try weird things—and the blast radius is strictly limited to a disposable environment. That feels like the right trade-off.
-
-And honestly, building the sandbox was way more interesting than the file organization itself.
+For a small student project, this was a useful lesson: when software starts acting on the real world, even in tiny ways, the boundary matters more than the clever part.
