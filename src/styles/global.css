@@ -20,9 +20,9 @@
   --bg1: hsl(0 0% 15%);
   --bg2: hsl(30 3% 18%);
   --bg3: hsl(30 4% 22%);
-  --tx1: hsl(36 20% 91%);
-  --tx2: hsl(36 10% 72%);
-  --tx3: hsl(36 8% 58%);
+  --tx1: hsl(36 16% 88%);
+  --tx2: hsl(36 10% 70%);
+  --tx3: hsl(36 8% 56%);
   --ui1: hsl(30 4% 22%);
   --ui2: hsl(30 5% 28%);
   --accent: #93c5fd;
@@ -58,7 +58,39 @@
 
 @layer base {
   * { @apply border-border; }
-  body { @apply bg-background text-foreground font-sans; }
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "calt";
+    font-synthesis-weight: none;
+    letter-spacing: -0.003em;
+  }
+
+  .dark body {
+    letter-spacing: 0;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--accent) 28%, transparent);
+    color: var(--tx1);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+    font-feature-settings: "kern", "liga", "calt";
+    letter-spacing: -0.018em;
+    line-height: 1.25;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  code, pre, .font-mono {
+    font-feature-settings: "kern", "calt", "zero", "ss01";
+  }
 
   .animate {
     @apply opacity-0 translate-y-3;
@@ -120,6 +152,7 @@
 .prose-reading {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  hanging-punctuation: first last;
 }
 
 /* Prose — wire typography plugin to our palette */
@@ -142,8 +175,45 @@
   --tw-prose-td-borders: var(--ui1);
 }
 
+.prose {
+  font-feature-settings: "kern", "liga", "calt";
+}
+
+.prose :where(p) {
+  line-height: 1.72;
+  text-wrap: pretty;
+  orphans: 2;
+  widows: 2;
+}
+
+.prose :where(h1, h2, h3, h4) {
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  line-height: 1.25;
+}
+
+.prose :where(h2) {
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  margin-top: 2.4em;
+}
+
+.prose :where(h3) {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.dark .prose :where(p) {
+  letter-spacing: 0.001em;
+}
+
+.dark .prose :where(strong) {
+  font-weight: 600;
+  color: var(--tx1);
+}
+
 .prose :where(code):not(:where(pre *)) {
-  @apply px-1.5 py-0.5 rounded-sm text-sm font-normal;
+  @apply px-1.5 py-0.5 rounded-sm text-[0.92em] font-normal;
   background-color: var(--bg3);
   border: 1px solid var(--ui1);
 }
@@ -154,11 +224,21 @@
   @apply rounded-lg;
   background-color: var(--bg2) !important;
   border: 1px solid var(--ui1);
+  line-height: 1.6;
 }
 
 .prose :where(a) {
   @apply no-underline hover:underline decoration-light-blue/40 underline-offset-4;
 }
+
+.prose :where(blockquote) {
+  font-style: normal;
+  border-left-width: 2px;
+  padding-left: 1.25em;
+  color: var(--tx2);
+}
+.prose :where(blockquote p:first-of-type)::before,
+.prose :where(blockquote p:last-of-type)::after { content: ""; }
 
 .prose .katex-display { @apply text-foreground; }
 

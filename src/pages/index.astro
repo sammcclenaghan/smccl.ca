@@ -10,7 +10,6 @@ const featured = projects.filter((p) => p.featured);
   <div class="space-y-16 landing-glow relative">
     <div class="space-y-6">
       <h1 class="animate font-medium text-3xl">Sam McClenaghan</h1>
-
       <p class="animate leading-relaxed text-foreground">
         I am a Computer Science student at the University of Victoria with
         experience building web applications and terminal tools. I'm passionate
@@ -18,9 +17,9 @@ const featured = projects.filter((p) => p.featured);
         technologies.
       </p>
       <p class="animate leading-relaxed text-foreground">
-        I develop backend systems and developer tooling, shifting focus from
-        the application layer to the metal. I am deeply interested in
-        distributed systems, infrastructure automation, and server performance.
+        I develop backend systems and developer tooling, shifting focus from the
+        application layer to the metal. I am deeply interested in distributed
+        systems, infrastructure automation, and server performance.
       </p>
     </div>
 
@@ -35,9 +34,7 @@ const featured = projects.filter((p) => p.featured);
           <h3 class="font-medium">Leanpub</h3>
           <span class="text-tx3 text-sm shrink-0">Jul — Dec 2025</span>
         </div>
-        <p class="text-sm text-muted-foreground">
-          Full Stack Developer Intern
-        </p>
+        <p class="text-sm text-muted-foreground">Full Stack Developer Intern</p>
         <p class="text-sm leading-relaxed text-tx3">
           Developed and maintained features for Leanpub's publishing platform,
           improving author and reader workflows with Ruby on Rails and React.
@@ -49,9 +46,7 @@ const featured = projects.filter((p) => p.featured);
           <h3 class="font-medium">TrustScience</h3>
           <span class="text-tx3 text-sm shrink-0">Nov 2022 — Aug 2024</span>
         </div>
-        <p class="text-sm text-muted-foreground">
-          Software Engineer Intern
-        </p>
+        <p class="text-sm text-muted-foreground">Software Engineer Intern</p>
         <p class="text-sm leading-relaxed text-tx3">
           Built and enhanced financial integration workflows for client
           onboarding using Vue.js and AWS Lambda.
@@ -65,30 +60,33 @@ const featured = projects.filter((p) => p.featured);
         <h2 class="text-lg font-medium">projects</h2>
       </div>
 
-      {featured.map((project) => (
-        <div class="animate space-y-1.5 group">
-          <Link href={project.href} external={true}>
-            <h3 class="font-medium flex items-center gap-2">
-              {project.name}
-              <svg
-                class="w-3 h-3 text-tx3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 17L17 7M17 7H7M17 7V17" />
-              </svg>
-            </h3>
-          </Link>
-          <p class="text-sm text-muted-foreground leading-relaxed">
-            {project.description}
-          </p>
-        </div>
-      ))}
+      {
+        featured.map((project) => (
+          <div class="animate space-y-1.5 group">
+            <Link href={project.href} external={true}>
+              <h3 class="font-medium flex items-center gap-2">
+                {project.name}
+                <svg
+                  class="w-3 h-3 text-tx3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 17L17 7M17 7H7M17 7V17"
+                  />
+                </svg>
+              </h3>
+            </Link>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {project.description}
+            </p>
+          </div>
+        ))
+      }
     </div>
   </div>
 </Layout>

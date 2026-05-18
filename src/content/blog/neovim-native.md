@@ -1,6 +1,6 @@
 ---
 title: "I Deleted My Config to Learn How Neovim Works"
-description: "69 lines, 5 plugins, and I finally understand how my editor works. Here's what I learned reading the docs."
+description: "68 lines, 5 plugins, and I finally understand how my editor works. Here's what I learned reading the docs."
 date: 2025-12-20
 ---
 
@@ -67,7 +67,7 @@ Then, you just call `vim.lsp.enable()` for the servers you want. That's it. No m
 
 I wanted to push this further. The Neovim plugin ecosystem is incredible, but what is possible without it?
 
-Neovim 0.12 is adding its own package manager, and it is a blast to use. I realized I never actually needed the lazy-loading features of [lazy.nvim](https://github.com/folke/lazy.nvim). Using the native `vim.pack` is shockingly easy:
+Neovim 0.12 added its own package manager, and it is a blast to use. I realized I never actually needed the lazy-loading features of [lazy.nvim](https://github.com/folke/lazy.nvim). Using the native `vim.pack` is shockingly easy:
 
 ```lua
 vim.pack.add({
@@ -95,7 +95,7 @@ But if that's all I use, how do I handle diagnostics, completions, and everythin
 
 ## The Neovim API is Incredible
 
-I’ll just say it: the Neovim API is the best API I have ever worked with.
+I’ll just say it: the Neovim API is one of the nicest APIs I have used in a tool I live inside every day.
 
 Once I started digging into the help pages, I kept finding built-in solutions. `vim.diagnostic`, user commands, autocommands—the docs are a goldmine. Once you understand how to hook into Neovim's events, you really don't need many plugins.
 

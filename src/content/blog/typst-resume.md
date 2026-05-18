@@ -77,7 +77,7 @@ Then I could use it throughout the document without repeating the styling:
 
 I also ended up making a small helper for contact information at the top of the page, where I wanted a row of links seperated by dots:
 
-```
+```typst
 #let contact-item(label, url) = link(url)[#label]
 
 #let contact-row(items) = [
@@ -91,7 +91,7 @@ I also ended up making a small helper for contact information at the top of the 
 That let me write the header much more cleanly:
 
 ```typst
-contact-row((
+#contact-row((
 	contact-item("GitHub", "https://github.com/example"),
 	contact-item("Email", "mailto:me@example.com"),
 	contact-item("Site", "https://example.com"),
@@ -99,6 +99,14 @@ contact-row((
 ```
 
 The final `resume.typ` file still reads mostly like a document, but it has just enough structure that I can reuse pieces, tweak the layout, and make global style changes without too much effort.
+
+## Why I liked it more
+
+The biggest improvement over my old setup was that the resume became a normal file in my project instead of something living in a browser tab. I could edit it locally, commit it to Git, and keep the source next to the exported PDF and SVG. That sounds small, but for a resume it matters: I want to be able to quickly change one line, regenerate the file, and know exactly what changed.
+
+Typst also hit a nice balance between control and readability. With LaTeX templates, I often felt like I was carefully poking at someone else's machinery. In Typst, the pieces I wrote felt like my own. The helpers for sections, contact links, and entries made the document easier to maintain without turning it into a full application.
+
+The fast feedback loop helped too. `typst watch` made spacing and layout changes feel interactive, which is exactly what I wanted for a resume. A few pixels of spacing can change the whole page, and being able to see those changes immediately made the process feel much less brittle.
 
 Overall, Typst was a lot of fun to use. I started this mostly because I wanted a resume I could edit locally and keep in version control, but I ended up finding a tool I'd happily use again for other documents.
 
