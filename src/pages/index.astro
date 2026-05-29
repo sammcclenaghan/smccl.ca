@@ -9,7 +9,7 @@ const featured = projects.filter((p) => p.featured);
 <Layout>
   <div class="space-y-16 landing-glow relative">
     <div class="space-y-6">
-      <h1 class="animate font-medium text-3xl">Sam McClenaghan</h1>
+      <h1 class="animate font-semibold text-3xl">Sam McClenaghan</h1>
       <p class="animate leading-relaxed text-foreground">
         I am a Computer Science student at the University of Victoria with
         experience building web applications and terminal tools. I'm passionate
@@ -26,12 +26,12 @@ const featured = projects.filter((p) => p.featured);
     <div class="space-y-6">
       <div class="animate flex items-center gap-3">
         <span class="text-light-blue text-lg">✦</span>
-        <h2 class="text-lg font-medium">work</h2>
+        <h2 class="text-lg font-semibold">work</h2>
       </div>
 
       <div class="animate space-y-1.5 group">
         <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-medium">Vertical City</h3>
+          <h3 class="font-semibold">Vertical City</h3>
           <span class="text-tx3 text-sm shrink-0">May 2026 — Present</span>
         </div>
         <p class="text-sm text-muted-foreground">Software Engineer</p>
@@ -44,7 +44,7 @@ const featured = projects.filter((p) => p.featured);
 
       <div class="animate space-y-1.5 group">
         <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-medium">Leanpub</h3>
+          <h3 class="font-semibold">Leanpub</h3>
           <span class="text-tx3 text-sm shrink-0">Jul — Dec 2025</span>
         </div>
         <p class="text-sm text-muted-foreground">Full Stack Developer Intern</p>
@@ -56,7 +56,7 @@ const featured = projects.filter((p) => p.featured);
 
       <div class="animate space-y-1.5 group">
         <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-medium">TrustScience</h3>
+          <h3 class="font-semibold">TrustScience</h3>
           <span class="text-tx3 text-sm shrink-0">Nov 2022 — Aug 2024</span>
         </div>
         <p class="text-sm text-muted-foreground">Software Engineer Intern</p>
@@ -70,14 +70,14 @@ const featured = projects.filter((p) => p.featured);
     <div class="space-y-6">
       <div class="animate flex items-center gap-3">
         <span class="text-light-blue text-lg">✦</span>
-        <h2 class="text-lg font-medium">projects</h2>
+        <h2 class="text-lg font-semibold">projects</h2>
       </div>
 
       {
         featured.map((project) => (
           <div class="animate space-y-1.5 group">
             <Link href={project.href} external={true}>
-              <h3 class="font-medium flex items-center gap-2">
+              <h3 class="font-semibold flex items-center gap-2">
                 {project.name}
                 <svg
                   class="w-3 h-3 text-tx3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
