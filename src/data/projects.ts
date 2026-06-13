@@ -7,6 +7,26 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    name: "git-fad",
+    href: "https://github.com/sammcclenaghan/git-fad",
+    description: "git add with fuzzy searching, built in rust.",
+    featured: true,
+  },
+  {
+    name: "scheduler",
+    href: "https://github.com/sammcclenaghan/scheduler",
+    description:
+      "a go backend api that serves university of victoria course data for building class schedules.",
+    featured: true,
+  },
+  {
+    name: "mildred",
+    href: "https://github.com/sammcclenaghan/mildred",
+    description:
+      "an agent that runs plain-english rules for you, sandboxed with apple containers.",
+    featured: true,
+  },
+  {
     name: "photograph",
     href: "https://github.com/sammcclenaghan/photograph",
     description:
@@ -14,39 +34,42 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    name: "job tracker",
+    href: "https://github.com/sammcclenaghan/job_tracker",
+    description:
+      "a job application tracker with ai-powered job posting parsing and organization, built with ruby on rails.",
+  },
+  {
     name: "vikes scraper",
     href: "https://github.com/sammcclenaghan/vikes-scraper",
     description:
-      "a cli tool that scrapes university of victoria's class data and provides an interface for searching and filtering classes.",
-    featured: true,
+      "a cli tool that scrapes university of victoria's class data for searching and filtering classes, written in go.",
   },
   {
-    name: "job tracker",
-    href: "https://github.com/sammcclenaghan/job-tracker",
-    description:
-      "a job application tracker with ai-powered cover letter generation and job posting parsing, built with ruby on rails and tailwind css.",
-    featured: true,
+    name: "knox",
+    href: "https://github.com/sammcclenaghan/knox",
+    description: "an obsidian vault manager written in go.",
+  },
+  {
+    name: "mango",
+    href: "https://github.com/sammcclenaghan/mango",
+    description: "a manga downloader built in go.",
   },
   {
     name: "text adventure",
     href: "https://github.com/sammcclenaghan/TextAdventure",
     description:
-      "event-driven game engine in Java with Factory and Command patterns.",
-    featured: true,
+      "an event-driven game engine in java using factory and command patterns.",
   },
   {
-    name: "git-fad",
-    href: "https://github.com/sammcclenaghan/git-fad",
-    description: "git add with fuzzy searching capabilities.",
+    name: "uvic scholarships",
+    href: "https://github.com/sammcclenaghan/uvic-scholarships",
+    description:
+      "a fast search tool for university of victoria scholarships.",
   },
   {
-    name: "mango",
-    href: "https://github.com/sammcclenaghan/mango",
-    description: "a manga downloader built in Go.",
-  },
-  {
-    name: "mildred",
-    href: "https://github.com/sammcclenaghan/mildred",
-    description: "a more personal maid.",
+    name: "hecto.rs",
+    href: "https://github.com/sammcclenaghan/hecto.rs",
+    description: "a terminal text editor built to learn rust.",
   },
 ];
