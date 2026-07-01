@@ -1,6 +1,9 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection, render } from "astro:content";
+// Self-hosted KaTeX styles, version-matched to the installed package
+// (the old CDN link was pinned to 0.15.2 against katex 0.16.x output)
+import "katex/dist/katex.min.css";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -30,7 +33,6 @@ function formatDate(date: Date) {
   description={post.data.description}
   type="article"
   publishedDate={post.data.date}
-  math={post.data.math}
 >
   <article class="prose-reading">
     <header class="space-y-3">

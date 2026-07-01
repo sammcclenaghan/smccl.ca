@@ -12,24 +12,12 @@ const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 4);
 
-const name = "Sam McClenaghan";
-const nameHtml = name
-  .split("")
-  .map((ch, i) =>
-    ch === " "
-      ? " "
-      : `<span class="name-letter" style="--i: ${i}">${ch}</span>`,
-  )
-  .join("");
 ---
 
 <Layout>
   <div class="space-y-16 relative">
     <div class="space-y-6">
-      <h1
-        class="animate name-ripple font-semibold text-4xl"
-        set:html={nameHtml}
-      />
+      <h1 class="animate font-semibold text-4xl">Sam McClenaghan</h1>
       <p class="animate leading-relaxed text-muted-foreground">
         I am a Computer Science student at the University of Victoria with
         experience building web applications and terminal tools. I'm passionate

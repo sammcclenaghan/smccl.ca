@@ -16,7 +16,7 @@ function isCurrent(href: string) {
 <header
   class="sticky top-3 z-40 mt-3 mb-12 w-full max-w-4xl mx-auto px-4 sm:px-6"
 >
-  <nav class="nav-pill flex items-center justify-between px-6 py-2">
+  <nav class="nav-pill flex items-center justify-between px-5 py-1.5">
     <a
       href="/"
       aria-label="Home"
@@ -24,7 +24,7 @@ function isCurrent(href: string) {
       class="touch-target group relative flex items-center"
     >
       <span
-        class="size-6 rounded-full bg-accent transition-transform duration-300 ease-out group-hover:scale-110"
+        class="size-6 rounded-full bg-accent transition-transform duration-300 ease-out group-hover:scale-110 group-active:scale-95"
         aria-hidden="true"></span>
       <svg
         class="dot-ring"
@@ -44,7 +44,7 @@ function isCurrent(href: string) {
         links.map((link) => (
           <a
             href={link.href}
-            class="nav-button text-item font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-md px-2 py-2.5 -mx-1 -my-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            class="nav-button text-item font-medium text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground px-2 py-2.5 -mx-1 -my-1.5"
             aria-keyshortcuts={link.key}
             data-section={link.section}
             aria-current={isCurrent(link.href) ? "page" : undefined}

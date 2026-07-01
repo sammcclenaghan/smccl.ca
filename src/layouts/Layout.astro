@@ -12,7 +12,6 @@ interface Props {
   image?: string;
   type?: "website" | "article";
   publishedDate?: Date;
-  math?: boolean;
 }
 
 const {
@@ -21,7 +20,6 @@ const {
   image,
   type = "website",
   publishedDate,
-  math = false,
 } = Astro.props;
 
 const siteName = "Sam McClenaghan";
@@ -143,15 +141,6 @@ const articleSchema =
         },
       ]}
     />
-    {
-      math && (
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
-        />
-      )
-    }
-
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
 

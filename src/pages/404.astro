@@ -7,10 +7,40 @@ import SectionHeading from "../components/SectionHeading.astro";
   <div class="space-y-6 py-16">
     <SectionHeading title="404" as="h1" />
     <p class="animate text-sm text-muted-foreground leading-relaxed">
-      This page doesn't exist.
+      This page doesn't exist. The dot is looking for it.
     </p>
     <a href="/" class="quiet-link animate">
       Back home <span class="quiet-arrow">→</span>
     </a>
   </div>
 </Layout>
+
+<!-- The lost dot — on 404 only, the nav dot glances left and right,
+     searching for the page. Another dot job, same accent, same restraint. -->
+<style is:global>
+  #nav-dot > span {
+    animation: dot-lost 4s ease-in-out 1s infinite;
+  }
+
+  @keyframes dot-lost {
+    0%,
+    40%,
+    100% {
+      transform: translateX(0);
+    }
+    8%,
+    16% {
+      transform: translateX(-4px);
+    }
+    24%,
+    32% {
+      transform: translateX(4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #nav-dot > span {
+      animation: none;
+    }
+  }
+</style>
