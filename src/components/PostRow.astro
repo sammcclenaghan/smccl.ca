@@ -1,0 +1,28 @@
+---
+type Props = {
+  href: string;
+  title: string;
+  date: Date;
+};
+
+const { href, title, date } = Astro.props;
+
+const formatted = date.toLocaleDateString("en-US", {
+  month: "short",
+  year: "numeric",
+});
+---
+
+<li class="animate">
+  <a href={href} class="group flex items-baseline gap-3 py-1">
+    <span
+      class="font-medium group-hover:text-light-blue transition-colors duration-200"
+    >
+      {title}
+    </span>
+    <span class="leader" aria-hidden="true"></span>
+    <time class="meta shrink-0" datetime={date.toISOString().slice(0, 10)}>
+      {formatted}
+    </time>
+  </a>
+</li>

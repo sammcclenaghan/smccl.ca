@@ -1,7 +1,7 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 interface Props {
@@ -113,11 +113,12 @@ const articleSchema =
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <ClientRouter />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     {
@@ -175,7 +176,6 @@ const articleSchema =
       )
     }
 
-    <ClientRouter />
   </head>
   <body>
     <div

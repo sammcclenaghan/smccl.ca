@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --bg1: hsl(40 14% 98%);
+  --bg1: #fff;
   --bg2: hsl(38 12% 96%);
   --bg3: hsl(36 12% 93%);
   --tx1: hsl(30 14% 15%);
@@ -14,23 +14,27 @@
   --ui2: hsl(38 10% 82%);
   --accent: #60a5fa;
   --accent-strong: #3b82f6;
+  --bio: #555;
+  --prose-body: hsl(30 10% 24%);
 }
 
 .dark {
-  --bg1: hsl(0 0% 15%);
+  --bg1: #121212;
   --bg2: hsl(30 3% 18%);
   --bg3: hsl(30 4% 22%);
-  --tx1: hsl(36 16% 88%);
+  --tx1: hsl(40 12% 96%);
   --tx2: hsl(36 10% 70%);
   --tx3: hsl(36 8% 56%);
   --ui1: hsl(30 4% 22%);
   --ui2: hsl(30 5% 28%);
   --accent: #93c5fd;
   --accent-strong: #93c5fd;
+  --bio: #8a8a8a;
+  --prose-body: hsl(36 8% 82%);
 }
 
 @theme inline {
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", "Siyam Rupali", sans-serif;
+  --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   --color-background: var(--bg1);
   --color-foreground: var(--tx1);
@@ -43,6 +47,7 @@
   --color-ui2: var(--ui2);
   --color-light-blue: var(--accent);
   --color-dark-blue: var(--accent-strong);
+  --color-bio: var(--bio);
 }
 
 /* Dark mode Shiki */
@@ -139,7 +144,25 @@
   }
 }
 
-.landing-glow::before {
+/* Nudge the asterisk down — `*` is drawn high in the em box by default */
+.star {
+  display: inline-block;
+  transform: translateY(0.12em);
+  transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.section-heading:hover .star {
+  transform: translateY(0.12em) rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star {
+    transition: none;
+  }
+}
+
+/* Ambient accent glow, shared by every page */
+body::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -147,6 +170,60 @@
   z-index: 0;
   background: radial-gradient(40rem 20rem at 10% -5%, color-mix(in oklab, var(--accent) 6%, transparent), transparent 70%);
   opacity: 0.85;
+}
+
+/* Metadata voice — dates and small labels are always mono, muted, tabular */
+.meta {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--tx3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Dotted leader connecting a list title to its date */
+.leader {
+  flex: 1;
+  min-width: 2rem;
+  border-bottom: 1px dotted var(--ui2);
+  transition: border-color 200ms ease;
+}
+
+.group:hover .leader {
+  border-color: var(--tx3);
+}
+
+/* Quiet mono link — "all writing →", back links */
+.quiet-link {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--tx3);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: color 200ms ease;
+}
+
+.quiet-link:hover {
+  color: var(--accent-strong);
+}
+
+.quiet-link .quiet-arrow {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+.quiet-link:hover .quiet-arrow {
+  transform: translateX(2px);
+}
+
+.quiet-link .quiet-arrow-back {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+.quiet-link:hover .quiet-arrow-back {
+  transform: translateX(-2px);
 }
 
 .prose-reading {
@@ -157,7 +234,7 @@
 
 /* Prose — wire typography plugin to our palette */
 .prose {
-  --tw-prose-body: var(--tx1);
+  --tw-prose-body: var(--prose-body);
   --tw-prose-headings: var(--tx1);
   --tw-prose-lead: var(--tx2);
   --tw-prose-links: var(--accent-strong);
@@ -177,6 +254,8 @@
 
 .prose {
   font-feature-settings: "kern", "liga", "calt";
+  /* 17px body — larger than UI text, smaller than prose-lg's 18px */
+  font-size: 1.0625rem;
 }
 
 .prose :where(p) {

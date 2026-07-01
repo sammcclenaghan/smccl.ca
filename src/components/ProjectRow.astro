@@ -1,0 +1,32 @@
+---
+type Props = {
+  name: string;
+  href: string;
+  description: string;
+};
+
+const { name, href, description } = Astro.props;
+---
+
+<div class="animate space-y-1.5 group">
+  <a href={href} target="_blank" rel="noopener noreferrer" class="inline-block">
+    <h3
+      class="font-medium flex items-center gap-2 group-hover:text-light-blue transition-colors duration-200"
+    >
+      {name}
+      <svg
+        class="w-3 h-3 text-tx3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M7 17L17 7M17 7H7M17 7V17"></path>
+      </svg>
+    </h3>
+  </a>
+  <p class="text-sm text-bio leading-relaxed">{description}</p>
+</div>

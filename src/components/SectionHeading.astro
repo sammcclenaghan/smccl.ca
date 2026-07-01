@@ -1,0 +1,13 @@
+---
+type Props = {
+  title: string;
+  as?: "h1" | "h2";
+};
+
+const { title, as: Tag = "h2" } = Astro.props;
+---
+
+<div class="animate section-heading flex items-center gap-2">
+  <span class="text-light-blue text-xl star" aria-hidden="true">*</span>
+  <Tag class="text-lg font-semibold">{title}</Tag>
+</div>

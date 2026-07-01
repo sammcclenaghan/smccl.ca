@@ -1,42 +1,29 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Link from "../components/Link.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ProjectRow from "../components/ProjectRow.astro";
 import { projects } from "../data/projects";
 ---
 
-<Layout>
+<Layout title="Projects">
   <div class="space-y-8">
-    <div class="space-y-4 animate">
-      <h1 class="font-medium text-3xl">
-        <span class="text-light-blue">✦</span> Projects
-      </h1>
+    <div class="space-y-3">
+      <SectionHeading title="projects" as="h1" />
+      <p class="animate text-sm text-bio leading-relaxed">
+        Things I've made — mostly terminal tools and small web apps.
+      </p>
     </div>
 
     <div class="space-y-6">
-      {projects.map((project) => (
-        <div class="space-y-1.5 animate group">
-          <Link href={project.href} external={true}>
-            <h3 class="font-medium flex items-center gap-2">
-              {project.name}
-              <svg
-                class="w-3 h-3 text-tx3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 17L17 7M17 7H7M17 7V17" />
-              </svg>
-            </h3>
-          </Link>
-          <p class="text-sm text-muted-foreground leading-relaxed">
-            {project.description}
-          </p>
-        </div>
-      ))}
+      {
+        projects.map((project) => (
+          <ProjectRow
+            name={project.name}
+            href={project.href}
+            description={project.description}
+          />
+        ))
+      }
     </div>
   </div>
 </Layout>

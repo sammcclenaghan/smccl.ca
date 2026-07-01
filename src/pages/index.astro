@@ -1,66 +1,65 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Link from "../components/Link.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import PostRow from "../components/PostRow.astro";
+import ProjectRow from "../components/ProjectRow.astro";
+import { getCollection } from "astro:content";
 import { projects } from "../data/projects";
 
 const featured = projects.filter((p) => p.featured);
+
+const posts = (await getCollection("blog"))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
 ---
 
 <Layout>
-  <div class="space-y-16 landing-glow relative">
+  <div class="space-y-16 relative">
     <div class="space-y-6">
-      <h1 class="animate font-semibold text-3xl">Sam McClenaghan</h1>
-      <p class="animate leading-relaxed text-foreground">
+      <h1 class="animate font-semibold text-4xl">Sam McClenaghan</h1>
+      <p class="animate leading-relaxed text-bio">
         I am a Computer Science student at the University of Victoria with
         experience building web applications and terminal tools. I'm passionate
         about creating efficient software solutions and exploring new
         technologies.
       </p>
-      <p class="animate leading-relaxed text-foreground">
-        I develop backend systems and developer tooling, shifting focus from the
-        application layer to the metal. I am deeply interested in distributed
-        systems, infrastructure automation, and server performance.
-      </p>
     </div>
 
     <div class="space-y-6">
-      <div class="animate flex items-center gap-3">
-        <span class="text-light-blue text-lg">✦</span>
-        <h2 class="text-lg font-semibold">work</h2>
-      </div>
+      <SectionHeading title="work" />
 
-      <div class="animate space-y-1.5 group">
+      <div class="animate space-y-1.5">
         <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-semibold">Vertical City</h3>
-          <span class="text-tx3 text-sm shrink-0">May 2026 — Present</span>
+          <h3 class="font-medium">Vertical City</h3>
+          <span class="meta shrink-0">May 2026 — Present</span>
         </div>
         <p class="text-sm text-muted-foreground">Software Engineer</p>
-        <p class="text-sm leading-relaxed text-tx3">
+        <p class="text-sm leading-relaxed text-bio">
           Building backend systems that deliver content to digital signage in
           elevators and lobbies, with a focus on request handling, data usage,
           and keeping screens in sync.
         </p>
       </div>
 
-      <div class="animate space-y-1.5 group">
+      <div class="animate space-y-1.5">
         <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-semibold">Leanpub</h3>
-          <span class="text-tx3 text-sm shrink-0">Jul — Dec 2025</span>
+          <h3 class="font-medium">Leanpub</h3>
+          <span class="meta shrink-0">Jul — Dec 2025</span>
         </div>
         <p class="text-sm text-muted-foreground">Full Stack Developer Intern</p>
-        <p class="text-sm leading-relaxed text-tx3">
+        <p class="text-sm leading-relaxed text-bio">
           Developed and maintained features for Leanpub's publishing platform,
           improving author and reader workflows with Ruby on Rails and React.
         </p>
       </div>
 
-      <div class="animate space-y-1.5 group">
+      <div class="animate space-y-1.5">
         <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-semibold">TrustScience</h3>
-          <span class="text-tx3 text-sm shrink-0">Nov 2022 — Aug 2024</span>
+          <h3 class="font-medium">TrustScience</h3>
+          <span class="meta shrink-0">Nov 2022 — Aug 2024</span>
         </div>
         <p class="text-sm text-muted-foreground">Software Engineer Intern</p>
-        <p class="text-sm leading-relaxed text-tx3">
+        <p class="text-sm leading-relaxed text-bio">
           Built and enhanced financial integration workflows for client
           onboarding using Vue.js and AWS Lambda.
         </p>
@@ -68,38 +67,41 @@ const featured = projects.filter((p) => p.featured);
     </div>
 
     <div class="space-y-6">
-      <div class="animate flex items-center gap-3">
-        <span class="text-light-blue text-lg">✦</span>
-        <h2 class="text-lg font-semibold">projects</h2>
-      </div>
+      <SectionHeading title="writing" />
+
+      <ul class="space-y-1.5">
+        {
+          posts.map((post) => (
+            <PostRow
+              href={`/writing/${post.id}`}
+              title={post.data.title}
+              date={post.data.date}
+            />
+          ))
+        }
+      </ul>
+
+      <a href="/writing" class="quiet-link animate">
+        all writing <span class="quiet-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="space-y-6">
+      <SectionHeading title="projects" />
 
       {
         featured.map((project) => (
-          <div class="animate space-y-1.5 group">
-            <Link href={project.href} external={true}>
-              <h3 class="font-semibold flex items-center gap-2">
-                {project.name}
-                <svg
-                  class="w-3 h-3 text-tx3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 17L17 7M17 7H7M17 7V17"
-                  />
-                </svg>
-              </h3>
-            </Link>
-            <p class="text-sm text-muted-foreground leading-relaxed">
-              {project.description}
-            </p>
-          </div>
+          <ProjectRow
+            name={project.name}
+            href={project.href}
+            description={project.description}
+          />
         ))
       }
+
+      <a href="/projects" class="quiet-link animate">
+        all projects <span class="quiet-arrow">→</span>
+      </a>
     </div>
   </div>
 </Layout>
