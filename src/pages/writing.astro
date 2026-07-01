@@ -10,17 +10,17 @@ const posts = (await getCollection("blog")).sort(
 ---
 
 <Layout title="Writing">
-  <div class="space-y-8">
+  <div class="space-y-6">
     <div class="space-y-3">
-      <SectionHeading title="writing" as="h1" />
-      <p class="animate text-sm text-bio leading-relaxed">
+      <SectionHeading title="Writing" as="h1" />
+      <p class="animate text-sm text-muted-foreground leading-relaxed">
         Notes on things I've built and what I learned building them.
       </p>
     </div>
 
     {
       posts.length === 0 ? (
-        <p class="animate text-bio">No writing yet.</p>
+        <p class="animate text-muted-foreground">No writing yet.</p>
       ) : (
         <ul class="space-y-1.5">
           {posts.map((post) => (

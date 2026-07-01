@@ -9,54 +9,137 @@
         <button
           id="email-trigger"
           popovertarget="email-popover"
-          class="hover:text-foreground transition-colors duration-200 cursor-pointer"
-        >email</button>
-        <div
-          id="email-popover"
-          popover
-          class="email-popover"
+          class="hover:text-foreground transition-colors duration-200 cursor-pointer py-3 -my-3"
+          >email</button
         >
+        <div id="email-popover" popover class="email-popover">
           <button id="email-copy" class="email-popover-item" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            copy
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect x="9" y="9" width="13" height="13" rx="2" ry="2"
+              ></rect><path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              ></path></svg
+            >
+            Copy
           </button>
           <div class="email-popover-divider"></div>
-          <a id="email-mail" href="mailto:sam@aream.ca" class="email-popover-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <span>open mail</span>
+          <a
+            id="email-mail"
+            href="mailto:sam@aream.ca"
+            class="email-popover-item"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              ></path><polyline points="22,6 12,13 2,6"></polyline></svg
+            >
+            <span>Open mail</span>
           </a>
           <div class="email-confirm-overlay email-confirm-copied">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline class="email-check-path" points="20 6 9 17 4 12"></polyline></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><polyline class="email-check-path" points="20 6 9 17 4 12"
+              ></polyline></svg
+            >
           </div>
           <div class="email-confirm-overlay email-confirm-sent">
-            <svg class="email-plane" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line class="email-plane-line" x1="22" y1="2" x2="11" y2="13"></line><polygon class="email-plane-body" points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            <svg
+              class="email-plane"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><line class="email-plane-line" x1="22" y1="2" x2="11" y2="13"
+              ></line><polygon
+                class="email-plane-body"
+                points="22 2 15 22 11 13 2 9 22 2"></polygon></svg
+            >
           </div>
         </div>
       </span>
-      <a href="https://github.com/sammcclenaghan" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors duration-200">github</a>
-      <a href="https://www.linkedin.com/in/sam-mcclenaghan" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors duration-200">linkedin</a>
-      <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors duration-200">resume</a>
-    </div>
-    <div class="flex flex-wrap gap-1 items-center shrink-0">
-      <button
-        data-theme="light"
-        aria-label="Light theme"
-        aria-pressed="false"
-        class="group size-8 flex items-center justify-center rounded-full hover:bg-secondary transition-colors duration-200"
+      <a
+        href="https://github.com/sammcclenaghan"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-foreground transition-colors duration-200 py-3 -my-3"
+        >gitHub</a
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
+      <a
+        href="https://www.linkedin.com/in/sam-mcclenaghan"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-foreground transition-colors duration-200 py-3 -my-3"
+        >linkedIn</a
+      >
+      <a
+        href="/resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-foreground transition-colors duration-200 py-3 -my-3"
+        >resume</a
+      >
+    </div>
+    <button
+      id="theme-toggle"
+      aria-label="Change theme"
+      class="touch-target size-8 flex items-center justify-center rounded-full text-tx3 hover:text-foreground hover:bg-secondary transition-colors duration-200 shrink-0"
+    >
+      <svg
+        class="sun-and-moon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <mask class="moon" id="moon-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+          <circle cx="24" cy="10" r="6" fill="black"></circle>
+        </mask>
+        <circle
+          class="sun"
+          cx="12"
+          cy="12"
+          r="6"
+          mask="url(#moon-mask)"
+          fill="currentColor"></circle>
+        <g
+          class="sun-beams"
           stroke="currentColor"
-          stroke-width="1.5"
+          stroke-width="2"
           stroke-linecap="round"
-          stroke-linejoin="round"
-          class="group-hover:stroke-black group-hover:dark:stroke-white group-aria-pressed:stroke-light-blue transition-colors duration-300 ease-in-out"
         >
-          <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
           <line x1="12" y1="21" x2="12" y2="23"></line>
           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
@@ -65,53 +148,9 @@
           <line x1="21" y1="12" x2="23" y2="12"></line>
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-      </button>
-      <button
-        data-theme="dark"
-        aria-label="Dark theme"
-        aria-pressed="false"
-        class="group size-8 flex items-center justify-center rounded-full hover:bg-secondary transition-colors duration-200"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="group-hover:stroke-black group-hover:dark:stroke-white group-aria-pressed:stroke-light-blue transition-colors duration-300 ease-in-out"
-        >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-      <button
-        data-theme="system"
-        aria-label="Adapt to system theme"
-        aria-pressed="true"
-        class="group size-8 flex items-center justify-center rounded-full hover:bg-secondary transition-colors duration-200"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="group-hover:stroke-black group-hover:dark:stroke-white group-aria-pressed:stroke-light-blue transition-colors duration-300 ease-in-out"
-        >
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-        </svg>
-      </button>
-    </div>
+        </g>
+      </svg>
+    </button>
   </div>
 
   <script is:inline src="/scripts/footer.js"></script>
@@ -129,12 +168,16 @@
         function closePopover() {
           if (!popover.matches(":popover-open")) return;
           popover.classList.add("closing");
-          popover.addEventListener("transitionend", () => {
-            popover.classList.remove("closing");
-            if (popover.matches(":popover-open")) {
-              popover.hidePopover();
-            }
-          }, { once: true });
+          popover.addEventListener(
+            "transitionend",
+            () => {
+              popover.classList.remove("closing");
+              if (popover.matches(":popover-open")) {
+                popover.hidePopover();
+              }
+            },
+            { once: true },
+          );
         }
 
         popover.addEventListener("toggle", (event) => {

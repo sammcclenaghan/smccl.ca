@@ -12,9 +12,7 @@
   --tx3: hsl(32 6% 55%);
   --ui1: hsl(38 12% 88%);
   --ui2: hsl(38 10% 82%);
-  --accent: #60a5fa;
-  --accent-strong: #3b82f6;
-  --bio: #555;
+  --accent: #3b82f6;
   --prose-body: hsl(30 10% 24%);
 }
 
@@ -28,26 +26,23 @@
   --ui1: hsl(30 4% 22%);
   --ui2: hsl(30 5% 28%);
   --accent: #93c5fd;
-  --accent-strong: #93c5fd;
-  --bio: #8a8a8a;
   --prose-body: hsl(36 8% 82%);
 }
 
 @theme inline {
-  --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans: "Geist", "Geist Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   --color-background: var(--bg1);
   --color-foreground: var(--tx1);
   --color-secondary: var(--bg2);
-  --color-muted: var(--bg2);
   --color-muted-foreground: var(--tx2);
   --color-border: var(--ui1);
-  --color-bg3: var(--bg3);
   --color-tx3: var(--tx3);
-  --color-ui2: var(--ui2);
-  --color-light-blue: var(--accent);
-  --color-dark-blue: var(--accent-strong);
-  --color-bio: var(--bio);
+  --color-accent: var(--accent);
+  /* Type scale — one ladder for the whole site:
+     name 36 / page title 24 / section 18 / item title 15 / body 14 / meta 13 */
+  --text-item: 0.9375rem;
+  --text-item--line-height: 1.5;
 }
 
 /* Dark mode Shiki */
@@ -103,37 +98,101 @@
     animation-delay: calc(var(--i, 0) * 0.07s);
   }
 
-  .nav-button[aria-keyshortcuts] {
+  /* Floating translucent bar. Shadow layers are mixed from the text color,
+     so they read as ink in light mode and as broadcast light in dark mode —
+     one rule covers both themes. */
+  .nav-pill {
+    position: relative;
+    min-height: 3.5rem;
+    border: 0.5px solid color-mix(in oklab, var(--tx1) 15%, var(--bg1));
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--bg1) 65%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow:
+      0 1px 0 0 color-mix(in oklab, var(--bg1) 70%, transparent) inset,
+      0 -1px 0 0 color-mix(in oklab, var(--tx1) 4%, transparent) inset,
+      0 1px 2px color-mix(in oklab, var(--tx1) 6%, transparent),
+      0 8px 24px color-mix(in oklab, var(--tx1) 8%, transparent);
+  }
+  .nav-button {
     position: relative;
     display: inline-flex;
     align-items: center;
   }
-  .nav-button[aria-keyshortcuts]::after {
-    content: attr(aria-keyshortcuts);
-    margin-left: 0.375rem;
-    font-size: 0.75rem;
-    line-height: 1;
-    padding: 0.125rem 0.375rem;
-    border-radius: 0.375rem;
-    border: 1px solid var(--ui1);
-    background: color-mix(in oklab, var(--bg2) 75%, transparent);
-    color: var(--tx2);
-    opacity: 0;
-    transform: translateY(2px);
-    transition: opacity 300ms ease, transform 300ms ease;
+
+  /* The dot's jobs. On article pages a thin ring draws itself around it as
+     you read (--progress is set from scroll position by header.js). During
+     slow navigations it breathes; when a page lands it gives one pulse. */
+  .dot-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
   }
-  .nav-button[aria-keyshortcuts]:hover::after,
-  .nav-button[aria-keyshortcuts]:focus-visible::after,
-  .nav-button[aria-keyshortcuts].keycap-visible::after {
-    opacity: 0.9;
-    transform: translateY(0);
+  .dot-reading .dot-ring {
+    opacity: 1;
   }
+  .dot-ring circle {
+    fill: none;
+    stroke-width: 1.5;
+  }
+  .dot-ring-track {
+    stroke: color-mix(in oklab, var(--accent) 18%, transparent);
+  }
+  .dot-ring-progress {
+    stroke: var(--accent);
+    stroke-linecap: round;
+    stroke-dasharray: 100.53;
+    stroke-dashoffset: calc(100.53 * (1 - var(--progress, 0)));
+    transition: stroke-dashoffset 120ms linear;
+  }
+  .dot-loading > span {
+    animation: dot-breathe 900ms ease-in-out infinite;
+  }
+  .dot-arrive > span {
+    animation: dot-arrive 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-button[aria-current="page"] {
+    color: var(--tx1);
+  }
+  /* The underline marks the page you're on — and slides there when you navigate */
+  .nav-underline {
+    position: absolute;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.25rem;
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--accent);
+    view-transition-name: nav-underline;
+  }
+}
+
+::view-transition-group(nav-underline) {
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dot-breathe {
+  50% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+}
+
+@keyframes dot-arrive {
+  35% {
+    transform: scale(1.18);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -142,9 +201,19 @@
     transform: none;
     animation: none;
   }
+
+  .dot-loading > span,
+  .dot-arrive > span {
+    animation: none;
+  }
+
+  .dot-ring-progress {
+    transition: none;
+  }
 }
 
-/* Nudge the asterisk down — `*` is drawn high in the em box by default */
+/* The site mark — an asterisk that leads every heading and the nav.
+   Nudged down because `*` is drawn high in the em box by default. */
 .star {
   display: inline-block;
   transform: translateY(0.12em);
@@ -205,7 +274,7 @@ body::before {
 }
 
 .quiet-link:hover {
-  color: var(--accent-strong);
+  color: var(--accent);
 }
 
 .quiet-link .quiet-arrow {
@@ -226,6 +295,79 @@ body::before {
   transform: translateX(-2px);
 }
 
+/* Invisible extension of small controls to a ~44px touch target */
+.touch-target {
+  position: relative;
+}
+.touch-target::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+
+/* Theme toggle — the sun morphs into the moon and back */
+.sun-and-moon > :is(.moon, .sun, .sun-beams) {
+  transform-origin: center;
+}
+
+.sun-and-moon > .sun {
+  transition: transform 500ms cubic-bezier(0.5, 1.25, 0.75, 1.25);
+}
+
+.sun-and-moon > .sun-beams {
+  transition:
+    transform 500ms cubic-bezier(0.5, 1.5, 0.75, 1.25),
+    opacity 500ms ease;
+}
+
+.sun-and-moon .moon > circle {
+  transition: cx 250ms cubic-bezier(0, 0, 0, 1);
+}
+
+.dark .sun-and-moon > .sun {
+  transform: scale(1.75);
+  transition-timing-function: cubic-bezier(0.25, 0, 0.3, 1);
+  transition-duration: 250ms;
+}
+
+.dark .sun-and-moon > .sun-beams {
+  opacity: 0;
+  transform: rotateZ(-25deg);
+  transition-duration: 150ms;
+}
+
+.dark .sun-and-moon > .moon > circle {
+  cx: 17;
+  transition-delay: 250ms;
+  transition-duration: 500ms;
+}
+
+/* The name breathes — a wave of weight ripples through on hover */
+.name-ripple .name-letter {
+  font-variation-settings: "wght" 600;
+  transition: font-variation-settings 350ms ease;
+  transition-delay: calc(var(--i) * 22ms);
+}
+
+.name-ripple:hover .name-letter {
+  font-variation-settings: "wght" 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun-and-moon > .sun,
+  .sun-and-moon > .sun-beams,
+  .sun-and-moon .moon > circle,
+  .name-ripple .name-letter {
+    transition: none;
+  }
+
+  ::view-transition-group(nav-underline),
+  ::view-transition-old(nav-underline),
+  ::view-transition-new(nav-underline) {
+    animation: none;
+  }
+}
+
 .prose-reading {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -237,7 +379,7 @@ body::before {
   --tw-prose-body: var(--prose-body);
   --tw-prose-headings: var(--tx1);
   --tw-prose-lead: var(--tx2);
-  --tw-prose-links: var(--accent-strong);
+  --tw-prose-links: var(--accent);
   --tw-prose-bold: var(--tx1);
   --tw-prose-counters: var(--tx2);
   --tw-prose-bullets: var(--tx3);
@@ -250,9 +392,6 @@ body::before {
   --tw-prose-pre-bg: var(--bg2);
   --tw-prose-th-borders: var(--ui1);
   --tw-prose-td-borders: var(--ui1);
-}
-
-.prose {
   font-feature-settings: "kern", "liga", "calt";
   /* 17px body — larger than UI text, smaller than prose-lg's 18px */
   font-size: 1.0625rem;
@@ -307,7 +446,7 @@ body::before {
 }
 
 .prose :where(a) {
-  @apply no-underline hover:underline decoration-light-blue/40 underline-offset-4;
+  @apply no-underline hover:underline decoration-accent/40 underline-offset-4;
 }
 
 .prose :where(blockquote) {
@@ -392,7 +531,7 @@ body::before {
   align-items: center;
   justify-content: center;
   background: var(--bg2);
-  color: var(--accent-strong);
+  color: var(--accent);
   pointer-events: none;
   clip-path: inset(0 100% 0 0 round 0.5rem);
   transition: clip-path 250ms cubic-bezier(0.22, 1, 0.36, 1);

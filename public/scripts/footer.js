@@ -1,37 +1,28 @@
 const STORAGE_KEY = "theme";
-const DEFAULT_THEME = "system";
 const docEl = document.documentElement;
 const media = window.matchMedia("(prefers-color-scheme: dark)");
 
 function getStoredTheme() {
   const value = localStorage.getItem(STORAGE_KEY);
-  return value === "light" || value === "dark" || value === "system"
-    ? value
-    : DEFAULT_THEME;
+  return value === "light" || value === "dark" ? value : null;
 }
 
+// Follow the system preference until the user makes an explicit choice.
 function getTheme() {
-  const mode = getStoredTheme();
-  if (localStorage.getItem(STORAGE_KEY) !== mode) {
-    localStorage.setItem(STORAGE_KEY, mode);
-  }
-  return mode;
-}
-
-function computeIsDark(mode) {
-  return mode === "dark" || (mode === "system" && media.matches);
+  return getStoredTheme() ?? (media.matches ? "dark" : "light");
 }
 
 function applyTheme(mode) {
-  docEl.classList.toggle("dark", computeIsDark(mode));
+  docEl.classList.toggle("dark", mode === "dark");
   docEl.dataset.theme = mode;
 }
 
-function updateButtonsActive(mode) {
-  const buttons = document.querySelectorAll("button[data-theme]");
-  buttons.forEach((button) => {
-    button.setAttribute("aria-pressed", String(button.dataset.theme === mode));
-  });
+function updateToggleLabel(mode) {
+  const toggle = document.getElementById("theme-toggle");
+  if (toggle) {
+    const next = mode === "dark" ? "light" : "dark";
+    toggle.setAttribute("aria-label", `Switch to ${next} theme`);
+  }
 }
 
 function setTheme(mode) {
@@ -41,39 +32,37 @@ function setTheme(mode) {
   } else {
     applyTheme(mode);
   }
-  updateButtonsActive(mode);
+  updateToggleLabel(mode);
 }
 
 function initializeFooterState() {
   const mode = getTheme();
   applyTheme(mode);
-  updateButtonsActive(mode);
+  updateToggleLabel(mode);
 }
 
 if (!window.__siteFooterInitialized) {
   window.__siteFooterInitialized = true;
 
   media.addEventListener("change", () => {
-    if (getTheme() === "system") {
-      applyTheme("system");
+    if (!getStoredTheme()) {
+      applyTheme(getTheme());
     }
   });
 
   document.addEventListener("astro:before-swap", (event) => {
     const mode = getTheme();
     const html = event.newDocument.documentElement;
-    html.classList.toggle("dark", computeIsDark(mode));
+    html.classList.toggle("dark", mode === "dark");
     html.dataset.theme = mode;
   });
 
   document.addEventListener("astro:page-load", initializeFooterState);
 
-  document.addEventListener("click", async (event) => {
-    const target = event.target;
-    const themeButton = target?.closest?.("button[data-theme]");
-    if (themeButton?.dataset.theme) {
-      setTheme(themeButton.dataset.theme);
-    }
+  document.addEventListener("click", (event) => {
+    const toggle = event.target?.closest?.("#theme-toggle");
+    if (!toggle) return;
+    setTheme(getTheme() === "dark" ? "light" : "dark");
   });
 }
 

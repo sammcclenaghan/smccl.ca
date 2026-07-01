@@ -11,13 +11,26 @@ const featured = projects.filter((p) => p.featured);
 const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 4);
+
+const name = "Sam McClenaghan";
+const nameHtml = name
+  .split("")
+  .map((ch, i) =>
+    ch === " "
+      ? " "
+      : `<span class="name-letter" style="--i: ${i}">${ch}</span>`,
+  )
+  .join("");
 ---
 
 <Layout>
   <div class="space-y-16 relative">
     <div class="space-y-6">
-      <h1 class="animate font-semibold text-4xl">Sam McClenaghan</h1>
-      <p class="animate leading-relaxed text-bio">
+      <h1
+        class="animate name-ripple font-semibold text-4xl"
+        set:html={nameHtml}
+      />
+      <p class="animate leading-relaxed text-muted-foreground">
         I am a Computer Science student at the University of Victoria with
         experience building web applications and terminal tools. I'm passionate
         about creating efficient software solutions and exploring new
@@ -26,40 +39,43 @@ const posts = (await getCollection("blog"))
     </div>
 
     <div class="space-y-6">
-      <SectionHeading title="work" />
+      <SectionHeading title="Work" />
 
-      <div class="animate space-y-1.5">
-        <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-medium">Vertical City</h3>
+      <div class="animate space-y-1.5 group">
+        <div class="flex items-baseline gap-3">
+          <h3 class="text-item font-medium">Vertical City</h3>
+          <span class="leader" aria-hidden="true"></span>
           <span class="meta shrink-0">May 2026 — Present</span>
         </div>
         <p class="text-sm text-muted-foreground">Software Engineer</p>
-        <p class="text-sm leading-relaxed text-bio">
+        <p class="text-sm leading-relaxed text-muted-foreground">
           Building backend systems that deliver content to digital signage in
           elevators and lobbies, with a focus on request handling, data usage,
           and keeping screens in sync.
         </p>
       </div>
 
-      <div class="animate space-y-1.5">
-        <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-medium">Leanpub</h3>
+      <div class="animate space-y-1.5 group">
+        <div class="flex items-baseline gap-3">
+          <h3 class="text-item font-medium">Leanpub</h3>
+          <span class="leader" aria-hidden="true"></span>
           <span class="meta shrink-0">Jul — Dec 2025</span>
         </div>
         <p class="text-sm text-muted-foreground">Full Stack Developer Intern</p>
-        <p class="text-sm leading-relaxed text-bio">
+        <p class="text-sm leading-relaxed text-muted-foreground">
           Developed and maintained features for Leanpub's publishing platform,
           improving author and reader workflows with Ruby on Rails and React.
         </p>
       </div>
 
-      <div class="animate space-y-1.5">
-        <div class="flex items-baseline justify-between gap-4">
-          <h3 class="font-medium">TrustScience</h3>
+      <div class="animate space-y-1.5 group">
+        <div class="flex items-baseline gap-3">
+          <h3 class="text-item font-medium">TrustScience</h3>
+          <span class="leader" aria-hidden="true"></span>
           <span class="meta shrink-0">Nov 2022 — Aug 2024</span>
         </div>
         <p class="text-sm text-muted-foreground">Software Engineer Intern</p>
-        <p class="text-sm leading-relaxed text-bio">
+        <p class="text-sm leading-relaxed text-muted-foreground">
           Built and enhanced financial integration workflows for client
           onboarding using Vue.js and AWS Lambda.
         </p>
@@ -67,7 +83,7 @@ const posts = (await getCollection("blog"))
     </div>
 
     <div class="space-y-6">
-      <SectionHeading title="writing" />
+      <SectionHeading title="Writing" />
 
       <ul class="space-y-1.5">
         {
@@ -82,25 +98,28 @@ const posts = (await getCollection("blog"))
       </ul>
 
       <a href="/writing" class="quiet-link animate">
-        all writing <span class="quiet-arrow">→</span>
+        All writing <span class="quiet-arrow">→</span>
       </a>
     </div>
 
     <div class="space-y-6">
-      <SectionHeading title="projects" />
+      <SectionHeading title="Projects" />
 
-      {
-        featured.map((project) => (
-          <ProjectRow
-            name={project.name}
-            href={project.href}
-            description={project.description}
-          />
-        ))
-      }
+      <ul class="space-y-4">
+        {
+          featured.map((project) => (
+            <ProjectRow
+              name={project.name}
+              href={project.href}
+              description={project.description}
+              lang={project.lang}
+            />
+          ))
+        }
+      </ul>
 
       <a href="/projects" class="quiet-link animate">
-        all projects <span class="quiet-arrow">→</span>
+        All projects <span class="quiet-arrow">→</span>
       </a>
     </div>
   </div>

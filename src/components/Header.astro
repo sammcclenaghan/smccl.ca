@@ -1,33 +1,62 @@
 ---
+const links = [
+  { href: "/", label: "Home", section: "home", key: "h" },
+  { href: "/writing", label: "Writing", section: "writing", key: "w" },
+  { href: "/projects", label: "Projects", section: "projects", key: "p" },
+];
 
+const path = Astro.url.pathname;
+
+function isCurrent(href: string) {
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(`${href}/`);
+}
 ---
 
-<header class="my-12">
-  <nav class="flex items-center gap-8">
+<header
+  class="sticky top-3 z-40 mt-3 mb-12 w-full max-w-4xl mx-auto px-4 sm:px-6"
+>
+  <nav class="nav-pill flex items-center justify-between px-6 py-2">
     <a
       href="/"
-      class="nav-button text-muted-foreground hover:text-light-blue transition-colors duration-200 flex items-center gap-1 rounded-md px-1 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-blue"
-      aria-keyshortcuts="h"
-      data-section="home"
+      aria-label="Home"
+      id="nav-dot"
+      class="touch-target group relative flex items-center"
     >
-      home
+      <span
+        class="size-6 rounded-full bg-accent transition-transform duration-300 ease-out group-hover:scale-110"
+        aria-hidden="true"></span>
+      <svg
+        class="dot-ring"
+        width="36"
+        height="36"
+        viewBox="0 0 36 36"
+        aria-hidden="true"
+      >
+        <circle class="dot-ring-track" cx="18" cy="18" r="16" fill="none"
+        ></circle>
+        <circle class="dot-ring-progress" cx="18" cy="18" r="16" fill="none"
+        ></circle>
+      </svg>
     </a>
-    <a
-      href="/writing"
-      class="nav-button text-muted-foreground hover:text-light-blue transition-colors duration-200 flex items-center gap-1 rounded-md px-1 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-blue"
-      aria-keyshortcuts="w"
-      data-section="writing"
-    >
-      writing
-    </a>
-    <a
-      href="/projects"
-      class="nav-button text-muted-foreground hover:text-light-blue transition-colors duration-200 flex items-center gap-1 rounded-md px-1 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-blue"
-      aria-keyshortcuts="p"
-      data-section="projects"
-    >
-      projects
-    </a>
+    <div class="absolute left-[54%] -translate-x-1/2 flex items-center gap-7">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class="nav-button text-item font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-md px-2 py-2.5 -mx-1 -my-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            aria-keyshortcuts={link.key}
+            data-section={link.section}
+            aria-current={isCurrent(link.href) ? "page" : undefined}
+          >
+            {link.label}
+            {isCurrent(link.href) && (
+              <span class="nav-underline" aria-hidden="true" />
+            )}
+          </a>
+        ))
+      }
+    </div>
   </nav>
 </header>
 

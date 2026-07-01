@@ -1,4 +1,6 @@
 ---
+import { join } from "node:path";
+import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -16,7 +18,7 @@ interface Props {
 const {
   title,
   description = "Sam McClenaghan - CS student at the University of Victoria and software engineer in Victoria, BC. Interested in backend design, networking, and infrastructure.",
-  image = "/og-image.png",
+  image,
   type = "website",
   publishedDate,
   math = false,
@@ -26,7 +28,7 @@ const siteName = "Sam McClenaghan";
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const pageTitle = title ? `${title} | ${siteName}` : siteName;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = new URL(image, Astro.site);
+const ogImageURL = image ? new URL(image, Astro.site) : null;
 
 // JSON-LD Structured Data
 const websiteSchema = {
@@ -85,26 +87,15 @@ const articleSchema =
     <!-- Inline theme detection to prevent flash of wrong theme -->
     <script is:inline>
       (function () {
-        const THEME_LIGHT = "light";
-        const THEME_DARK = "dark";
-        const THEME_SYSTEM = "system";
         const stored = localStorage.getItem("theme");
-        const theme =
-          stored === THEME_LIGHT ||
-          stored === THEME_DARK ||
-          stored === THEME_SYSTEM
-            ? stored
-            : THEME_SYSTEM;
-        if (stored !== theme) {
-          localStorage.setItem("theme", theme);
-        }
+        const explicit =
+          stored === "light" || stored === "dark" ? stored : null;
         const prefersDark = window.matchMedia(
           "(prefers-color-scheme: dark)",
         ).matches;
-        const isDark =
-          theme === THEME_DARK || (theme === THEME_SYSTEM && prefersDark);
-        document.documentElement.classList.toggle("dark", isDark);
-        document.documentElement.dataset.theme = theme;
+        const mode = explicit ?? (prefersDark ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", mode === "dark");
+        document.documentElement.dataset.theme = mode;
       })();
     </script>
     <meta charset="UTF-8" />
@@ -115,11 +106,42 @@ const articleSchema =
     <title>{pageTitle}</title>
     <ClientRouter />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
+    <AstroFont
+      config={[
+        {
+          name: "Geist",
+          src: [
+            {
+              style: "normal",
+              weight: "100 900",
+              path: join(process.cwd(), "public", "fonts", "geist-latin.woff2"),
+            },
+          ],
+          preload: true,
+          display: "swap",
+          fallbackName: "Geist Fallback",
+          fallback: "sans-serif",
+        },
+        {
+          name: "Geist Mono",
+          src: [
+            {
+              style: "normal",
+              weight: "100 900",
+              path: join(
+                process.cwd(),
+                "public",
+                "fonts",
+                "geist-mono-latin.woff2",
+              ),
+            },
+          ],
+          preload: true,
+          display: "swap",
+          fallbackName: "Geist Mono Fallback",
+          fallback: "monospace",
+        },
+      ]}
     />
     {
       math && (
@@ -133,20 +155,28 @@ const articleSchema =
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
 
+    <!-- RSS -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={siteName}
+      href={new URL("rss.xml", Astro.site)}
+    />
+
     <!-- Open Graph -->
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImageURL} />
+    {ogImageURL && <meta property="og:image" content={ogImageURL} />}
     <meta property="og:site_name" content={siteName} />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content={ogImageURL ? "summary_large_image" : "summary"} />
     <meta name="twitter:url" content={canonicalURL} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImageURL} />
+    {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
 
     <!-- Article-specific meta -->
     {
@@ -178,15 +208,14 @@ const articleSchema =
 
   </head>
   <body>
-    <div
-      class="min-h-screen flex flex-col mx-auto px-6 pb-8 max-w-2xl"
-      id="page"
-    >
+    <div class="min-h-screen flex flex-col" id="page">
       <Header />
-      <main class="flex-1">
-        <slot />
-      </main>
-      <Footer />
+      <div class="w-full flex-1 flex flex-col mx-auto px-6 pb-8 max-w-2xl">
+        <main class="flex-1">
+          <slot />
+        </main>
+        <Footer />
+      </div>
     </div>
   </body>
 </html>

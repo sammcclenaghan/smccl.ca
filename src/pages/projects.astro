@@ -6,24 +6,25 @@ import { projects } from "../data/projects";
 ---
 
 <Layout title="Projects">
-  <div class="space-y-8">
+  <div class="space-y-6">
     <div class="space-y-3">
-      <SectionHeading title="projects" as="h1" />
-      <p class="animate text-sm text-bio leading-relaxed">
+      <SectionHeading title="Projects" as="h1" />
+      <p class="animate text-sm text-muted-foreground leading-relaxed">
         Things I've made — mostly terminal tools and small web apps.
       </p>
     </div>
 
-    <div class="space-y-6">
+    <ul class="space-y-4">
       {
         projects.map((project) => (
           <ProjectRow
             name={project.name}
             href={project.href}
             description={project.description}
+            lang={project.lang}
           />
         ))
       }
-    </div>
+    </ul>
   </div>
 </Layout>

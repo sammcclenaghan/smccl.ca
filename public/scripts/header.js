@@ -50,16 +50,111 @@ function handleKeydown(event) {
   }
 
   event.preventDefault();
-  link.classList.add("keycap-visible");
-  window.setTimeout(() => link.classList.remove("keycap-visible"), 600);
+
+  // Already there — nothing to do.
+  if (link.getAttribute("aria-current") === "page") {
+    return;
+  }
+
   link.click();
+}
+
+function getNavDot() {
+  return document.getElementById("nav-dot");
+}
+
+// On article pages, the dot's ring tracks how far you've read.
+let ringCleanup = null;
+
+function setupReadingRing() {
+  if (ringCleanup) {
+    ringCleanup();
+    ringCleanup = null;
+  }
+
+  const dot = getNavDot();
+  const article = document.querySelector("article");
+  if (!dot) {
+    return;
+  }
+  if (!article) {
+    dot.classList.remove("dot-reading");
+    return;
+  }
+
+  function update() {
+    const rect = article.getBoundingClientRect();
+    const total = rect.height - window.innerHeight;
+    // A post that fits on one screen has nothing to track.
+    if (total < 80) {
+      dot.classList.remove("dot-reading");
+      return;
+    }
+    dot.classList.add("dot-reading");
+    const progress = Math.min(1, Math.max(0, -rect.top / total));
+    dot.style.setProperty("--progress", String(progress));
+  }
+
+  let frame = 0;
+  function onScroll() {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      update();
+    });
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  update();
+
+  ringCleanup = () => {
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onScroll);
+    if (frame) cancelAnimationFrame(frame);
+  };
+}
+
+// The dot doubles as the loading indicator: it only starts breathing if a
+// navigation is still in flight after 300ms, and greets each page landing
+// with a single pulse.
+let loadingTimer = null;
+
+function handleNavigationStart() {
+  loadingTimer = setTimeout(() => {
+    getNavDot()?.classList.add("dot-loading");
+  }, 300);
+}
+
+function handlePageLanded() {
+  if (loadingTimer) {
+    clearTimeout(loadingTimer);
+    loadingTimer = null;
+  }
+  const dot = getNavDot();
+  if (!dot) return;
+  dot.classList.remove("dot-loading");
+  dot.classList.add("dot-arrive");
+  dot.addEventListener(
+    "animationend",
+    () => dot.classList.remove("dot-arrive"),
+    { once: true },
+  );
 }
 
 if (!window.__siteHeaderInitialized) {
   window.__siteHeaderInitialized = true;
 
-  document.addEventListener("DOMContentLoaded", () => applySequentialFade());
-  document.addEventListener("astro:page-load", () => applySequentialFade());
+  document.addEventListener("DOMContentLoaded", () => {
+    applySequentialFade();
+    setupReadingRing();
+  });
+  document.addEventListener("astro:page-load", () => {
+    applySequentialFade();
+    setupReadingRing();
+    handlePageLanded();
+  });
+  document.addEventListener("astro:before-preparation", handleNavigationStart);
   document.addEventListener("astro:after-swap", () => {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -73,4 +168,5 @@ if (!window.__siteHeaderInitialized) {
 
 if (document.readyState !== "loading") {
   applySequentialFade();
+  setupReadingRing();
 }
