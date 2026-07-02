@@ -63,6 +63,27 @@ function getNavDot() {
   return document.getElementById("nav-dot");
 }
 
+// One-shot dot gestures. Clearing the others first means a new gesture
+// always interrupts a stale one instead of silently losing the race.
+const DOT_GESTURES = [
+  "dot-release",
+  "dot-shrug",
+  "dot-squint",
+  "dot-exhale",
+  "dot-complete",
+];
+
+function playDotGesture(dot, name) {
+  DOT_GESTURES.forEach((gesture) => dot.classList.remove(gesture));
+  void dot.offsetWidth;
+  dot.classList.add(name);
+  dot.addEventListener("animationend", function onEnd(event) {
+    if (event.animationName !== name) return;
+    dot.classList.remove(name);
+    dot.removeEventListener("animationend", onEnd);
+  });
+}
+
 // On article pages, the dot pales out and saturates back to full accent
 // as you read; reaching the end earns one completion pulse.
 let ringCleanup = null;
@@ -89,12 +110,7 @@ function setupReadingRing() {
   let completed = false;
 
   function celebrate() {
-    dot.classList.add("dot-complete");
-    dot.addEventListener("animationend", function onEnd(event) {
-      if (event.animationName !== "dot-complete") return;
-      dot.classList.remove("dot-complete");
-      dot.removeEventListener("animationend", onEnd);
-    });
+    playDotGesture(dot, "dot-complete");
   }
 
   function update() {
@@ -167,19 +183,40 @@ function handlePageLanded() {
 }
 
 // On the home page the dot has nowhere left to take you — clicking it
-// shouldn't trigger a pointless same-page navigation.
+// (or pressing "h") earns a shrug instead of a pointless navigation.
 function handleDotClick(event) {
   const dot =
     event.target instanceof Element ? event.target.closest("#nav-dot") : null;
   if (!dot) return;
   if (window.location.pathname !== "/") return;
   event.preventDefault();
+  playDotGesture(dot, "dot-shrug");
+}
+
+// Press physics: the dot squashes while held and springs back on release.
+// The pointer can leave the dot before letting go, so release listens
+// document-wide and looks for whichever dot is still pressed.
+function handleDotPress(event) {
+  const dot =
+    event.target instanceof Element ? event.target.closest("#nav-dot") : null;
+  if (!dot) return;
+  dot.classList.add("dot-pressed");
+}
+
+function handleDotRelease() {
+  const dot = document.querySelector("#nav-dot.dot-pressed");
+  if (!dot) return;
+  dot.classList.remove("dot-pressed");
+  playDotGesture(dot, "dot-release");
 }
 
 if (!window.__siteHeaderInitialized) {
   window.__siteHeaderInitialized = true;
 
   document.addEventListener("click", handleDotClick);
+  document.addEventListener("pointerdown", handleDotPress);
+  document.addEventListener("pointerup", handleDotRelease);
+  document.addEventListener("pointercancel", handleDotRelease);
 
   document.addEventListener("DOMContentLoaded", () => {
     applySequentialFade();

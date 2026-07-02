@@ -23,6 +23,15 @@ function applyTheme(mode) {
     ?.setAttribute("content", THEME_COLORS[mode]);
 }
 
+// The dot reacts to the lights: switching to light it squints, switching
+// to dark it exhales. Gestures live in header.js, which loads first; the
+// typeof check keeps the toggle working even if that ever changes.
+function reactDotToTheme(mode) {
+  const dot = document.getElementById("nav-dot");
+  if (!dot || typeof playDotGesture !== "function") return;
+  playDotGesture(dot, mode === "light" ? "dot-squint" : "dot-exhale");
+}
+
 function updateToggleLabel(mode) {
   const toggle = document.getElementById("theme-toggle");
   if (toggle) {
@@ -43,6 +52,11 @@ function setTheme(mode, origin) {
   ).matches;
   if (!document.startViewTransition || reduceMotion || !origin) {
     applyTheme(mode);
+    // Only a person flipping the switch earns a reaction — programmatic
+    // or reduced-motion changes don't.
+    if (!reduceMotion && origin) {
+      reactDotToTheme(mode);
+    }
     return;
   }
 
@@ -75,6 +89,9 @@ function setTheme(mode, origin) {
     .catch(() => {});
   transition.finished.finally(() => {
     delete docEl.dataset.themeSwitching;
+    // React after the sweep: the circle reveals the dot last, so the
+    // squint/exhale lands right as the new theme reaches it.
+    reactDotToTheme(mode);
   });
 }
 
