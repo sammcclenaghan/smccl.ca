@@ -4,7 +4,9 @@ description: "What I learned deploying a Go and React course scheduler on one sm
 date: 2026-05-17
 ---
 
-I have been building a course scheduling app called `course_flow`.
+_Update: this post describes an earlier iteration of [courseflow](https://courseflow.smccl.ca) — a Go API, React frontend, and MySQL on a single Droplet. The project has since been rewritten for Cloudflare Workers, D1, and Durable Objects. The deployment lessons below are what made me comfortable enough with the moving pieces to replace them._
+
+I have been building a course scheduling app called `courseflow`.
 
 The app itself is the fun part: search for courses, add them to a schedule, and make planning a semester less painful.
 

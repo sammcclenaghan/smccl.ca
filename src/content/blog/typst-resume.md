@@ -112,4 +112,4 @@ Overall, Typst was a lot of fun to use. I started this mostly because I wanted a
 
 Oh, and the best part? It outputs natively to SVG.
 
-<object data="/resume.svg" type="image/svg+xml" style="width: 100%; max-width: 612px; height: auto; border: 1px solid #e5e7eb; border-radius: 4px;"></object>
+<object data="/resume.svg" type="image/svg+xml" style="width: 100%; max-width: 612px; height: auto; border: 1px solid var(--ui1); border-radius: 6px;" aria-label="My current resume, rendered from Typst"></object>
