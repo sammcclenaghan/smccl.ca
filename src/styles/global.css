@@ -151,34 +151,34 @@
     transform: scale(0.96);
   }
 
-  /* The dot's jobs. On article pages a thin ring draws itself around it as
-     you read (--progress is set from scroll position by header.js). During
-     slow navigations it breathes; when a page lands it gives one pulse. */
-  .dot-ring {
+  /* The dot's jobs. On article pages the disc itself is the reading
+     meter: it goes quiet and refills with solid accent from the bottom as
+     you read (--progress is set from scroll position by header.js), landing
+     fully solid when the piece is done. Progress lives inside the circle —
+     nothing is drawn around it. During slow navigations it breathes; when
+     a page lands it gives one pulse. */
+  #nav-dot > span {
+    background: var(--accent);
+    transition:
+      transform 300ms var(--ease-out),
+      background-color 300ms var(--ease-out);
+  }
+  #nav-dot.dot-reading > span {
+    background: color-mix(in oklab, var(--accent) 32%, var(--bg2));
+  }
+  #nav-dot > span::after {
+    content: "";
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-90deg);
-    pointer-events: none;
+    inset: 0;
+    background: var(--accent);
+    clip-path: inset(calc((1 - var(--progress, 0)) * 100%) 0 0 0);
     opacity: 0;
-    transition: opacity 300ms var(--ease-out);
+    transition:
+      clip-path 120ms linear,
+      opacity 300ms var(--ease-out);
   }
-  .dot-reading .dot-ring {
+  #nav-dot.dot-reading > span::after {
     opacity: 1;
-  }
-  .dot-ring circle {
-    fill: none;
-    stroke-width: 1.5;
-  }
-  .dot-ring-track {
-    stroke: color-mix(in oklab, var(--accent) 18%, transparent);
-  }
-  .dot-ring-progress {
-    stroke: var(--accent);
-    stroke-linecap: round;
-    stroke-dasharray: 100.53;
-    stroke-dashoffset: calc(100.53 * (1 - var(--progress, 0)));
-    transition: stroke-dashoffset 120ms linear;
   }
   .dot-loading > span {
     animation: dot-breathe 900ms ease-in-out infinite;
@@ -244,7 +244,7 @@
     animation: none;
   }
 
-  .dot-ring-progress {
+  #nav-dot > span::after {
     transition: none;
   }
 }

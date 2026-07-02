@@ -25,20 +25,8 @@ function isCurrent(href: string) {
       class="touch-target group relative flex items-center"
     >
       <span
-        class="relative size-6 rounded-full bg-accent transition-transform duration-300 ease-out group-hover:scale-110 group-active:scale-95"
+        class="relative size-6 rounded-full overflow-hidden group-hover:scale-110 group-active:scale-95"
         aria-hidden="true"></span>
-      <svg
-        class="dot-ring"
-        width="36"
-        height="36"
-        viewBox="0 0 36 36"
-        aria-hidden="true"
-      >
-        <circle class="dot-ring-track" cx="18" cy="18" r="16" fill="none"
-        ></circle>
-        <circle class="dot-ring-progress" cx="18" cy="18" r="16" fill="none"
-        ></circle>
-      </svg>
       {
         path === "/" && (
           <span class="nav-underline nav-underline-dot" aria-hidden="true" />
