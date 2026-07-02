@@ -6,15 +6,9 @@ type Props = {
 
 const { title, as: Tag = "h2" } = Astro.props;
 
-// h1 = page title on subpages, h2 = section heading on home — same
-// anatomy (star + title), two rungs of the same type ladder.
+// h1 = page title on subpages, h2 = section heading on home — two rungs
+// of the same type ladder.
 const titleClass = Tag === "h1" ? "text-2xl" : "text-lg";
-const starClass = Tag === "h1" ? "text-2xl" : "text-xl";
 ---
 
-<!-- Baseline-aligned so the star stays on the first line when a long
-     title (e.g. an article's) wraps -->
-<div class="animate section-heading flex items-baseline gap-2">
-  <span class={`text-accent star ${starClass}`} aria-hidden="true">*</span>
-  <Tag class={`${titleClass} font-semibold`}>{title}</Tag>
-</div>
+<Tag class={`animate ${titleClass} font-semibold`}>{title}</Tag>

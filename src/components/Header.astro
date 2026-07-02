@@ -39,6 +39,11 @@ function isCurrent(href: string) {
         <circle class="dot-ring-progress" cx="18" cy="18" r="16" fill="none"
         ></circle>
       </svg>
+      {
+        path === "/" && (
+          <span class="nav-underline nav-underline-dot" aria-hidden="true" />
+        )
+      }
     </a>
     <div class="flex items-center gap-7">
       {

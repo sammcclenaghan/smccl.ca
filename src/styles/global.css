@@ -197,6 +197,16 @@
     background: var(--accent);
     view-transition-name: nav-underline;
   }
+  /* On home nothing is "current" — home is the dot itself. This invisible
+     twin under the dot gives the view transition a destination, so going
+     home the underline glides left and dissolves into the dot (whose
+     arrival pulse sells the swallow), and leaving home it slips back out. */
+  .nav-underline-dot {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+  }
 }
 
 ::view-transition-group(nav-underline) {
@@ -239,28 +249,6 @@
   }
 }
 
-/* The site mark — an asterisk that leads every heading.
-   Nudged down because `*` is drawn high in the em box by default.
-   On heading hover it clicks one notch clockwise — a crisp 60° turn,
-   no overshoot, so it never reads as tipping over. */
-.star {
-  display: inline-block;
-  transform: translateY(0.12em);
-  transition: transform 300ms var(--ease-out);
-}
-
-@media (hover: hover) {
-  .section-heading:hover .star {
-    transform: translateY(0.12em) rotate(60deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .star {
-    transition: none;
-  }
-}
-
 /* Ambient accent glow, shared by every page */
 body::before {
   content: "";
@@ -282,72 +270,14 @@ body::before {
   transition: color 200ms var(--ease-out);
 }
 
-/* Dotted leader connecting a list title to its date */
-.leader {
-  flex: 1;
-  min-width: 2rem;
-  border-bottom: 1px dotted var(--ui2);
-  transition: border-color 200ms var(--ease-out);
-}
-
-/* Hovering a row wakes the whole anatomy: title → accent (set per
-   component), leader dots darken, and the date warms one step.
-   Hover rules are gated to devices that actually hover, so taps on
-   touch screens don't leave rows stuck in their hover state (matching
-   how Tailwind gates its own hover: utilities). */
-@media (hover: hover) {
-  .group:hover .leader {
-    border-color: var(--tx3);
-  }
-}
-
-/* The dot's secret: three quick clicks on the home page — where it has
-   nowhere left to take you — and it shows the site's star, with the same
-   60° notch turn the headings use. */
-#nav-dot > span::after {
-  content: "*";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--bg1);
-  font-size: 1rem;
-  line-height: 1;
-  opacity: 0;
-  transform: translateY(0.12em);
-}
-
-.dot-star > span::after {
-  animation: dot-star-wink 400ms var(--ease-out);
-}
-
-@keyframes dot-star-wink {
-  0% {
-    opacity: 0;
-    transform: translateY(0.12em) rotate(0deg);
-  }
-  30%,
-  70% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(0.12em) rotate(60deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dot-star > span::after {
-    animation: none;
-  }
-}
-
+/* Hovering a row warms its date one step alongside the title. Gated to
+   devices that actually hover, so taps on touch screens don't leave rows
+   stuck in their hover state (matching how Tailwind gates hover:) */
 @media (hover: hover) {
   .group:hover .meta {
     color: var(--tx2);
   }
 }
-
 /* Quiet mono link — "all writing →", back links */
 .quiet-link {
   font-family: var(--font-mono);

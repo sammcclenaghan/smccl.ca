@@ -14,14 +14,13 @@ const formatted = date.toLocaleDateString("en-US", {
 ---
 
 <li class="animate">
-  <a href={href} class="group flex items-baseline gap-3 py-1">
+  <a href={href} class="group block space-y-1 py-1">
     <span
-      class="text-item font-medium group-hover:text-accent transition-colors duration-200"
+      class="text-item font-medium block group-hover:text-accent transition-colors duration-200"
     >
       {title}
     </span>
-    <span class="leader" aria-hidden="true"></span>
-    <time class="meta shrink-0" datetime={date.toISOString().slice(0, 10)}>
+    <time class="meta block" datetime={date.toISOString().slice(0, 10)}>
       {formatted}
     </time>
   </a>

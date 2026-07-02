@@ -3,25 +3,24 @@ type Props = {
   name: string;
   href: string;
   description: string;
-  lang: string;
 };
 
-const { name, href, description, lang } = Astro.props;
+const { name, href, description } = Astro.props;
 ---
 
-<li class="animate space-y-1">
+<li class="animate">
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    class="group flex items-baseline gap-3 py-1"
+    class="group block space-y-1 py-1"
   >
     <span
       class="text-item font-medium inline-flex items-center gap-1.5 group-hover:text-accent transition-colors duration-200"
     >
       {name}
       <svg
-        class="w-3 h-3 text-tx3 transition duration-200 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        class="w-3 h-3 text-accent opacity-0 -translate-x-0.5 translate-y-0.5 transition duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -34,8 +33,6 @@ const { name, href, description, lang } = Astro.props;
           d="M7 17L17 7M17 7H7M17 7V17"></path>
       </svg>
     </span>
-    <span class="leader" aria-hidden="true"></span>
-    <span class="meta shrink-0">{lang}</span>
+    <p class="text-sm text-muted-foreground leading-relaxed">{description}</p>
   </a>
-  <p class="text-sm text-muted-foreground leading-relaxed">{description}</p>
 </li>
