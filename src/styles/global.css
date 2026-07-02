@@ -249,8 +249,10 @@
   transition: transform 300ms var(--ease-out);
 }
 
-.section-heading:hover .star {
-  transform: translateY(0.12em) rotate(60deg);
+@media (hover: hover) {
+  .section-heading:hover .star {
+    transform: translateY(0.12em) rotate(60deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -289,9 +291,14 @@ body::before {
 }
 
 /* Hovering a row wakes the whole anatomy: title → accent (set per
-   component), leader dots darken, and the date warms one step. */
-.group:hover .leader {
-  border-color: var(--tx3);
+   component), leader dots darken, and the date warms one step.
+   Hover rules are gated to devices that actually hover, so taps on
+   touch screens don't leave rows stuck in their hover state (matching
+   how Tailwind gates its own hover: utilities). */
+@media (hover: hover) {
+  .group:hover .leader {
+    border-color: var(--tx3);
+  }
 }
 
 /* The dot's secret: three quick clicks on the home page — where it has
@@ -335,8 +342,10 @@ body::before {
   }
 }
 
-.group:hover .meta {
-  color: var(--tx2);
+@media (hover: hover) {
+  .group:hover .meta {
+    color: var(--tx2);
+  }
 }
 
 /* Quiet mono link — "all writing →", back links */
@@ -350,17 +359,9 @@ body::before {
   transition: color 200ms var(--ease-out);
 }
 
-.quiet-link:hover {
-  color: var(--accent);
-}
-
 .quiet-link .quiet-arrow {
   display: inline-block;
   transition: transform 200ms var(--ease-out);
-}
-
-.quiet-link:hover .quiet-arrow {
-  transform: translateX(2px);
 }
 
 .quiet-link .quiet-arrow-back {
@@ -368,8 +369,18 @@ body::before {
   transition: transform 200ms var(--ease-out);
 }
 
-.quiet-link:hover .quiet-arrow-back {
-  transform: translateX(-2px);
+@media (hover: hover) {
+  .quiet-link:hover {
+    color: var(--accent);
+  }
+
+  .quiet-link:hover .quiet-arrow {
+    transform: translateX(2px);
+  }
+
+  .quiet-link:hover .quiet-arrow-back {
+    transform: translateX(-2px);
+  }
 }
 
 /* Footer voice — quiet links whose accent underline fades in on hover,
@@ -384,8 +395,10 @@ body::before {
     text-decoration-color 200ms var(--ease-out);
 }
 
-.footer-link:hover {
-  text-decoration-color: color-mix(in oklab, var(--accent) 60%, transparent);
+@media (hover: hover) {
+  .footer-link:hover {
+    text-decoration-color: color-mix(in oklab, var(--accent) 60%, transparent);
+  }
 }
 
 /* Invisible extension of small controls to a ~44px touch target */
@@ -505,6 +518,15 @@ html[data-theme-switching]::view-transition-new(root) {
   font-feature-settings: "kern", "liga", "calt";
   /* 17px body — larger than UI text, smaller than prose-lg's 18px */
   font-size: 1.0625rem;
+  /* Long inline code and URLs break instead of stretching the page
+     on narrow screens (overflow-wrap inherits) */
+  overflow-wrap: break-word;
+}
+
+/* Wide tables scroll inside their own box on small screens */
+.prose :where(table) {
+  display: block;
+  overflow-x: auto;
 }
 
 .prose :where(p) {
@@ -570,7 +592,12 @@ html[data-theme-switching]::view-transition-new(root) {
 .prose :where(blockquote p:first-of-type)::before,
 .prose :where(blockquote p:last-of-type)::after { content: ""; }
 
-.prose .katex-display { @apply text-foreground; }
+/* Wide equations scroll sideways on small screens */
+.prose .katex-display {
+  @apply text-foreground;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
 /* Email popover */
 .email-popover {
@@ -628,9 +655,11 @@ html[data-theme-switching]::view-transition-new(root) {
     color 150ms var(--ease-out),
     transform 150ms var(--ease-out);
 }
-.email-popover-item:hover {
-  background: var(--bg3);
-  color: var(--tx1);
+@media (hover: hover) {
+  .email-popover-item:hover {
+    background: var(--bg3);
+    color: var(--tx1);
+  }
 }
 .email-popover-item:active {
   transform: scale(0.96);

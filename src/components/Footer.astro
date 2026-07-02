@@ -4,7 +4,7 @@
 
 <footer class="animate">
   <div class="flex items-center justify-between pt-12 gap-4">
-    <div class="flex items-center gap-3 text-sm text-tx3">
+    <div class="flex items-center gap-4 sm:gap-3 text-sm text-tx3">
       <span class="relative">
         <button
           id="email-trigger"
@@ -186,8 +186,17 @@
             const rect = trigger.getBoundingClientRect();
             const popoverHeight = popover.offsetHeight;
             const popoverWidth = popover.offsetWidth;
+            // Center on the trigger, but stay inside the viewport —
+            // the trigger sits near the screen edge on phones
+            const left = Math.max(
+              12,
+              Math.min(
+                rect.left + rect.width / 2 - popoverWidth / 2,
+                window.innerWidth - popoverWidth - 12,
+              ),
+            );
             popover.style.top = `${rect.top - popoverHeight - 8}px`;
-            popover.style.left = `${rect.left + rect.width / 2 - popoverWidth / 2}px`;
+            popover.style.left = `${left}px`;
           });
         });
 
