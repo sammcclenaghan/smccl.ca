@@ -170,16 +170,40 @@
       var(--bg2)
     );
   }
-  /* Finishing the piece: the dot pops once and sends out a ripple that
-     dissolves — a transient reward, not a persistent mark */
+  /* Finishing the piece: the dot crouches, hops, lands, and sends out a
+     ripple that dissolves — a transient reward, not a persistent mark */
   .dot-complete > span {
-    animation: dot-complete 600ms var(--ease-out);
+    animation: dot-complete 700ms var(--ease-out);
   }
   .dot-loading > span {
     animation: dot-breathe 900ms ease-in-out infinite;
   }
   .dot-arrive > span {
     animation: dot-arrive 350ms var(--ease-out);
+  }
+  /* The dot is a body, not an icon: pressing squashes it underfoot,
+     releasing springs it tall before it settles (header.js drives the
+     classes). The quicker transition matches every other pressed control. */
+  #nav-dot.dot-pressed > span {
+    transform: scaleX(1.12) scaleY(0.82);
+    transition-duration: 150ms;
+  }
+  .dot-release > span {
+    animation: dot-release 350ms var(--ease-out);
+  }
+  /* Clicking home while already home: a small "we're already here" —
+     one squash, a glance to each side, done */
+  .dot-shrug > span {
+    animation: dot-shrug 500ms var(--ease-out);
+  }
+  /* The dot reacts to the lights: switching to light it squints like
+     stepping out of a cinema; switching to dark it exhales and relaxes.
+     Same breath tempo as dot-breathe, so ease-in-out is at home here. */
+  .dot-squint > span {
+    animation: dot-squint 450ms var(--ease-out);
+  }
+  .dot-exhale > span {
+    animation: dot-exhale 900ms ease-in-out;
   }
   /* The underline marks the page you're on — and slides there when you navigate */
   .nav-underline {
@@ -227,16 +251,81 @@
   }
 }
 
+/* Crouch, hop, land — the ripple leaves at the top of the jump */
 @keyframes dot-complete {
   0% {
+    transform: scale(1);
     box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 45%, transparent);
   }
-  35% {
-    transform: scale(1.15);
+  20% {
+    transform: scaleX(1.18) scaleY(0.78);
+  }
+  45% {
+    transform: translateY(-7px) scaleX(0.9) scaleY(1.16);
+  }
+  70% {
+    transform: translateY(0) scaleX(1.12) scaleY(0.86);
   }
   100% {
     transform: scale(1);
     box-shadow: 0 0 0 14px transparent;
+  }
+}
+
+@keyframes dot-release {
+  0% {
+    transform: scaleX(1.12) scaleY(0.82);
+  }
+  40% {
+    transform: scaleX(0.92) scaleY(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dot-shrug {
+  0% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scaleX(1.15) scaleY(0.85);
+  }
+  35% {
+    transform: translateX(-3px);
+  }
+  55% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes dot-squint {
+  0% {
+    transform: scaleY(1);
+  }
+  30% {
+    transform: scaleY(0.45) scaleX(1.08);
+  }
+  60% {
+    transform: scaleY(0.62) scaleX(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dot-exhale {
+  35% {
+    transform: scale(0.85);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -249,7 +338,11 @@
 
   .dot-loading > span,
   .dot-arrive > span,
-  .dot-complete > span {
+  .dot-complete > span,
+  .dot-release > span,
+  .dot-shrug > span,
+  .dot-squint > span,
+  .dot-exhale > span {
     animation: none;
   }
 }
