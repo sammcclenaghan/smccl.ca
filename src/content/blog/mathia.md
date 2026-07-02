@@ -84,7 +84,7 @@ H(X = h) &= H(X = t) = 1
 \end{aligned}
 $$
 
-![probability vs entropy](images/media/image1.png)
+![Binary entropy curve: entropy in bits versus probability of heads, peaking at 1 bit for a fair coin](images/media/image1.png)
 
 If the same coin were flipped $n$ times, the information for the sequence would be $n$ bits. If instead the coin were biased and the probability of heads were $0.1$, the information would be
 
@@ -97,7 +97,7 @@ $$
 
 The rarer event (probability $0.1$) carries more bits of information. Plotting self-information for probabilities between $0$ and $1$ gives:
 
-![self-information vs probability](images/media/image1.jpeg)
+![Self-information in bits falling toward zero as the probability of an event approaches 1](images/media/image1.jpeg)
 
 As the probability increases, the self-information decreases. But self-information only deals with a single outcome. To compute the entropy of a password, we need to account for _all_ outcomes of a variable.
 
@@ -117,7 +117,7 @@ $$H(X) = -\left[0.1 \log_{2} 0.1 + 0.9 \log_{2} 0.9\right] \approx 0.47 \text{ b
 
 As shown above, the more uncertainty there is in a probability distribution, the more Shannon entropy it has.
 
-![probability vs entropy](images/media/image1.png)
+![The same binary entropy curve: distributions closer to uniform carry more entropy](images/media/image1.png)
 
 This works well for a password of one character. But no one uses a one-character password (hopefully), so we need to extend the formula to every character. If we flip two coins, we'd like to define the entropy of both tosses together. Let the first coin toss be $X$ and the second be $Y$:
 
