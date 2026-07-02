@@ -31,7 +31,7 @@ export default defineConfig({
       },
     },
   },
-  site: "https://samcclenaghan.netlify.app/",
+  site: "https://smccl.ca/",
   integrations: [sitemap()],
   experimental: {
     queuedRendering: {
