@@ -82,6 +82,9 @@ const articleSchema =
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Mobile browser chrome color — kept in sync with the theme by the
+         inline script below and footer.js -->
+    <meta name="theme-color" content="#fff" />
     <!-- Inline theme detection to prevent flash of wrong theme -->
     <script is:inline>
       (function () {
@@ -94,6 +97,9 @@ const articleSchema =
         const mode = explicit ?? (prefersDark ? "dark" : "light");
         document.documentElement.classList.toggle("dark", mode === "dark");
         document.documentElement.dataset.theme = mode;
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute("content", mode === "dark" ? "#121212" : "#fff");
       })();
     </script>
     <meta charset="UTF-8" />

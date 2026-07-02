@@ -723,3 +723,24 @@ html[data-theme-switching]::view-transition-new(root) {
     opacity: 0;
   }
 }
+
+/* Under reduced motion the popover still works — confirmations just
+   appear instead of drawing themselves */
+@media (prefers-reduced-motion: reduce) {
+  .email-popover,
+  .email-confirm-overlay,
+  .email-plane {
+    transition: none;
+  }
+
+  .email-popover.copied .email-check-path,
+  .email-popover.sent .email-plane-line,
+  .email-popover.sent .email-plane-body {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .email-popover.sent .email-plane {
+    animation: none;
+  }
+}

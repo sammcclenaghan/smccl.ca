@@ -12,9 +12,15 @@ function getTheme() {
   return getStoredTheme() ?? (media.matches ? "dark" : "light");
 }
 
+// Matches --bg1 in global.css; keeps mobile browser chrome in sync
+const THEME_COLORS = { light: "#fff", dark: "#121212" };
+
 function applyTheme(mode) {
   docEl.classList.toggle("dark", mode === "dark");
   docEl.dataset.theme = mode;
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", THEME_COLORS[mode]);
 }
 
 function updateToggleLabel(mode) {
@@ -92,6 +98,9 @@ if (!window.__siteFooterInitialized) {
     const html = event.newDocument.documentElement;
     html.classList.toggle("dark", mode === "dark");
     html.dataset.theme = mode;
+    event.newDocument
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", THEME_COLORS[mode]);
   });
 
   document.addEventListener("astro:page-load", initializeFooterState);
