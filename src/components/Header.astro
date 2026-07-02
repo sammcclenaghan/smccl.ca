@@ -1,6 +1,8 @@
 ---
+// Two zones, one width: the pill sits exactly over the content column,
+// the dot (which is the home link — no redundant "Home" label) on the
+// left, destinations on the right. Same anatomy as the footer.
 const links = [
-  { href: "/", label: "Home", section: "home", key: "h" },
   { href: "/writing", label: "Writing", section: "writing", key: "w" },
   { href: "/projects", label: "Projects", section: "projects", key: "p" },
 ];
@@ -8,23 +10,22 @@ const links = [
 const path = Astro.url.pathname;
 
 function isCurrent(href: string) {
-  if (href === "/") return path === "/";
   return path === href || path.startsWith(`${href}/`);
 }
 ---
 
-<header
-  class="sticky top-3 z-40 mt-3 mb-12 w-full max-w-4xl mx-auto px-4 sm:px-6"
->
+<header class="sticky top-3 z-40 mt-3 mb-12 w-full max-w-2xl mx-auto px-6">
   <nav class="nav-pill flex items-center justify-between px-5 py-1.5">
     <a
       href="/"
       aria-label="Home"
       id="nav-dot"
+      data-section="home"
+      aria-keyshortcuts="h"
       class="touch-target group relative flex items-center"
     >
       <span
-        class="size-6 rounded-full bg-accent transition-transform duration-300 ease-out group-hover:scale-110 group-active:scale-95"
+        class="relative size-6 rounded-full bg-accent transition-transform duration-300 ease-out group-hover:scale-110 group-active:scale-95"
         aria-hidden="true"></span>
       <svg
         class="dot-ring"
@@ -39,7 +40,7 @@ function isCurrent(href: string) {
         ></circle>
       </svg>
     </a>
-    <div class="absolute left-[54%] -translate-x-1/2 flex items-center gap-7">
+    <div class="flex items-center gap-7">
       {
         links.map((link) => (
           <a

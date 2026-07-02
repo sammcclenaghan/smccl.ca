@@ -14,10 +14,17 @@
   --ui2: hsl(38 10% 82%);
   --accent: #3b82f6;
   --prose-body: hsl(30 10% 24%);
-  /* Two easings for the whole site: --ease-out for almost everything,
-     --ease-out-expo for overlays that need a faster arrival. */
+}
+
+/* Two easings for the whole site: --ease-out for almost everything,
+   --ease-out-expo for overlays that need a faster arrival. Living in
+   @theme, they also become the `ease-out` utility and the default
+   timing function of every `transition-*` utility — so Tailwind
+   transitions ride the same curves as handwritten CSS. */
+@theme {
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dark {
@@ -111,7 +118,7 @@
 
   .animate {
     @apply opacity-0 translate-y-3;
-    animation: fadeInUp 0.35s ease-out forwards;
+    animation: fadeInUp 0.35s var(--ease-out) forwards;
     animation-delay: calc(var(--i, 0) * 0.07s);
   }
 
@@ -154,7 +161,7 @@
     transform: translate(-50%, -50%) rotate(-90deg);
     pointer-events: none;
     opacity: 0;
-    transition: opacity 300ms ease;
+    transition: opacity 300ms var(--ease-out);
   }
   .dot-reading .dot-ring {
     opacity: 1;
@@ -287,6 +294,47 @@ body::before {
   border-color: var(--tx3);
 }
 
+/* The dot's secret: three quick clicks on the home page — where it has
+   nowhere left to take you — and it shows the site's star, with the same
+   60° notch turn the headings use. */
+#nav-dot > span::after {
+  content: "*";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--bg1);
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(0.12em);
+}
+
+.dot-star > span::after {
+  animation: dot-star-wink 400ms var(--ease-out);
+}
+
+@keyframes dot-star-wink {
+  0% {
+    opacity: 0;
+    transform: translateY(0.12em) rotate(0deg);
+  }
+  30%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0.12em) rotate(60deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot-star > span::after {
+    animation: none;
+  }
+}
+
 .group:hover .meta {
   color: var(--tx2);
 }
@@ -382,23 +430,25 @@ html[data-theme-switching]::view-transition-new(root) {
   transform-origin: center;
 }
 
+/* Same two easing tokens as the rest of the site — the old springy
+   overshoot curves were off-system */
 .sun-and-moon > .sun {
-  transition: transform 500ms cubic-bezier(0.5, 1.25, 0.75, 1.25);
+  transition: transform 500ms var(--ease-out);
 }
 
 .sun-and-moon > .sun-beams {
   transition:
-    transform 500ms cubic-bezier(0.5, 1.5, 0.75, 1.25),
-    opacity 500ms ease;
+    transform 500ms var(--ease-out),
+    opacity 500ms var(--ease-out);
 }
 
 .sun-and-moon .moon > circle {
-  transition: cx 250ms cubic-bezier(0, 0, 0, 1);
+  transition: cx 250ms var(--ease-out);
 }
 
 .dark .sun-and-moon > .sun {
   transform: scale(1.75);
-  transition-timing-function: cubic-bezier(0.25, 0, 0.3, 1);
+  transition-timing-function: var(--ease-out);
   transition-duration: 250ms;
 }
 
@@ -573,7 +623,10 @@ html[data-theme-switching]::view-transition-new(root) {
   color: var(--tx2);
   text-decoration: none;
   cursor: pointer;
-  transition: background 150ms, color 150ms, transform 150ms var(--ease-out);
+  transition:
+    background 150ms var(--ease-out),
+    color 150ms var(--ease-out),
+    transform 150ms var(--ease-out);
 }
 .email-popover-item:hover {
   background: var(--bg3);
@@ -621,7 +674,7 @@ html[data-theme-switching]::view-transition-new(root) {
 }
 .email-plane {
   transition: transform 300ms var(--ease-out),
-              opacity 200ms ease;
+              opacity 200ms var(--ease-out);
 }
 .email-popover.sent .email-plane-body {
   animation: email-draw 250ms 200ms var(--ease-out) forwards;

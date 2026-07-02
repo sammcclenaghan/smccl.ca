@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
 import { getCollection, render } from "astro:content";
 // Self-hosted KaTeX styles, version-matched to the installed package
 // (the old CDN link was pinned to 0.15.2 against katex 0.16.x output)
@@ -36,11 +37,7 @@ function formatDate(date: Date) {
 >
   <article class="prose-reading">
     <header class="space-y-3">
-      <h1
-        class="animate font-semibold text-3xl tracking-tight leading-[1.2] text-balance"
-      >
-        {post.data.title}
-      </h1>
+      <SectionHeading title={post.data.title} as="h1" />
       <p class="animate meta flex items-center gap-2">
         <time datetime={post.data.date.toISOString().slice(0, 10)}>
           {formatDate(post.data.date)}

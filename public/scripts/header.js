@@ -142,8 +142,32 @@ function handlePageLanded() {
   );
 }
 
+// The dot's secret: on the home page — where a home link has nowhere
+// left to take you — three quick clicks make it show the site's star.
+let starClicks = 0;
+let starClickTimer = null;
+
+function handleDotClick(event) {
+  const dot =
+    event.target instanceof Element ? event.target.closest("#nav-dot") : null;
+  if (!dot) return;
+  if (window.location.pathname !== "/") return;
+  event.preventDefault();
+  starClicks += 1;
+  if (starClickTimer) clearTimeout(starClickTimer);
+  starClickTimer = setTimeout(() => {
+    starClicks = 0;
+  }, 1200);
+  if (starClicks < 3) return;
+  starClicks = 0;
+  dot.classList.add("dot-star");
+  setTimeout(() => dot.classList.remove("dot-star"), 450);
+}
+
 if (!window.__siteHeaderInitialized) {
   window.__siteHeaderInitialized = true;
+
+  document.addEventListener("click", handleDotClick);
 
   document.addEventListener("DOMContentLoaded", () => {
     applySequentialFade();
