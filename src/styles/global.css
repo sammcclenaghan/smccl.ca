@@ -152,11 +152,11 @@
   }
 
   /* The dot's jobs. On article pages the disc itself is the reading
-     meter: it goes quiet and refills with solid accent from the bottom as
-     you read (--progress is set from scroll position by header.js), landing
-     fully solid when the piece is done. Progress lives inside the circle —
-     nothing is drawn around it. During slow navigations it breathes; when
-     a page lands it gives one pulse. */
+     meter: it starts as a pale tint of the accent and saturates back to
+     full color as you read (--progress is set from scroll position by
+     header.js). Reaching the end earns one soft completion pulse. Progress
+     lives inside the circle — nothing is drawn around it. During slow
+     navigations it breathes; when a page lands it gives one pulse. */
   #nav-dot > span {
     background: var(--accent);
     transition:
@@ -164,21 +164,16 @@
       background-color 300ms var(--ease-out);
   }
   #nav-dot.dot-reading > span {
-    background: color-mix(in oklab, var(--accent) 32%, var(--bg2));
+    background: color-mix(
+      in oklab,
+      var(--accent) calc(18% + 82% * var(--progress, 0)),
+      var(--bg2)
+    );
   }
-  #nav-dot > span::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--accent);
-    clip-path: inset(calc((1 - var(--progress, 0)) * 100%) 0 0 0);
-    opacity: 0;
-    transition:
-      clip-path 120ms linear,
-      opacity 300ms var(--ease-out);
-  }
-  #nav-dot.dot-reading > span::after {
-    opacity: 1;
+  /* Finishing the piece: the dot pops once and sends out a ripple that
+     dissolves — a transient reward, not a persistent mark */
+  .dot-complete > span {
+    animation: dot-complete 600ms var(--ease-out);
   }
   .dot-loading > span {
     animation: dot-breathe 900ms ease-in-out infinite;
@@ -232,6 +227,19 @@
   }
 }
 
+@keyframes dot-complete {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 45%, transparent);
+  }
+  35% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 14px transparent;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate {
     opacity: 1;
@@ -240,12 +248,9 @@
   }
 
   .dot-loading > span,
-  .dot-arrive > span {
+  .dot-arrive > span,
+  .dot-complete > span {
     animation: none;
-  }
-
-  #nav-dot > span::after {
-    transition: none;
   }
 }
 
