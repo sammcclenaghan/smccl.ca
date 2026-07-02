@@ -34,8 +34,8 @@ but when you want reusable pieces, those are easy to define too. For example, if
 ]
 
 #resume-item(
-	"Software Engineer"
-	"2023-2025"
+	"Software Engineer",
+	"2023-2025",
 	[Worked on APIs, CI tooling, and infrastructure.]
 )
 ```
@@ -75,7 +75,7 @@ Then I could use it throughout the document without repeating the styling:
 #resume-section("Education")
 ```
 
-I also ended up making a small helper for contact information at the top of the page, where I wanted a row of links seperated by dots:
+I also ended up making a small helper for contact information at the top of the page, where I wanted a row of links separated by dots:
 
 ```typst
 #let contact-item(label, url) = link(url)[#label]

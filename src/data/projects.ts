@@ -7,16 +7,10 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    name: "git-fad",
-    href: "https://github.com/sammcclenaghan/git-fad",
-    description: "Git add with fuzzy searching, built in Rust.",
-    featured: true,
-  },
-  {
-    name: "scheduler",
-    href: "https://github.com/sammcclenaghan/scheduler",
+    name: "courseflow",
+    href: "https://courseflow.smccl.ca",
     description:
-      "A Go backend API that serves University of Victoria course data for building class schedules.",
+      "A UVic course scheduler on Cloudflare Workers, D1, and Durable Objects — catalog search with live enrollment, timetable building, and real-time schedule sharing.",
     featured: true,
   },
   {
@@ -27,10 +21,9 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    name: "photograph",
-    href: "https://github.com/sammcclenaghan/photograph",
-    description:
-      "A photography portfolio and gallery app built with Next.js, React and PostgreSQL.",
+    name: "git-fad",
+    href: "https://github.com/sammcclenaghan/git-fad",
+    description: "Git add with fuzzy searching, built in Rust.",
     featured: true,
   },
   {
@@ -38,38 +31,18 @@ export const projects: Project[] = [
     href: "https://github.com/sammcclenaghan/job_tracker",
     description:
       "A job application tracker with AI-powered job posting parsing and organization, built with Ruby on Rails.",
+    featured: true,
   },
   {
-    name: "vikes scraper",
-    href: "https://github.com/sammcclenaghan/vikes-scraper",
+    name: "photograph",
+    href: "https://github.com/sammcclenaghan/photograph",
     description:
-      "A CLI tool that scrapes University of Victoria's class data for searching and filtering classes, written in Go.",
-  },
-  {
-    name: "knox",
-    href: "https://github.com/sammcclenaghan/knox",
-    description: "An Obsidian vault manager written in Go.",
-  },
-  {
-    name: "mango",
-    href: "https://github.com/sammcclenaghan/mango",
-    description: "A manga downloader built in Go.",
-  },
-  {
-    name: "text adventure",
-    href: "https://github.com/sammcclenaghan/TextAdventure",
-    description:
-      "An event-driven game engine in Java using factory and command patterns.",
+      "A photography portfolio and gallery app built with Next.js, React and PostgreSQL.",
   },
   {
     name: "uvic scholarships",
     href: "https://github.com/sammcclenaghan/uvic-scholarships",
     description:
       "A fast search tool for University of Victoria scholarships.",
-  },
-  {
-    name: "hecto.rs",
-    href: "https://github.com/sammcclenaghan/hecto.rs",
-    description: "A terminal text editor built to learn Rust.",
   },
 ];
