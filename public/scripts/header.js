@@ -63,7 +63,8 @@ function getNavDot() {
   return document.getElementById("nav-dot");
 }
 
-// On article pages, the dot's ring tracks how far you've read.
+// On article pages, the dot pales out and saturates back to full accent
+// as you read; reaching the end earns one completion pulse.
 let ringCleanup = null;
 
 function setupReadingRing() {
@@ -82,6 +83,20 @@ function setupReadingRing() {
     return;
   }
 
+  // The pulse fires once when the reader reaches the end, and re-arms
+  // only after they scroll back up a real distance — no re-triggering
+  // from small wiggles at the bottom of the page.
+  let completed = false;
+
+  function celebrate() {
+    dot.classList.add("dot-complete");
+    dot.addEventListener("animationend", function onEnd(event) {
+      if (event.animationName !== "dot-complete") return;
+      dot.classList.remove("dot-complete");
+      dot.removeEventListener("animationend", onEnd);
+    });
+  }
+
   function update() {
     const rect = article.getBoundingClientRect();
     const total = rect.height - window.innerHeight;
@@ -93,6 +108,15 @@ function setupReadingRing() {
     dot.classList.add("dot-reading");
     const progress = Math.min(1, Math.max(0, -rect.top / total));
     dot.style.setProperty("--progress", String(progress));
+
+    if (progress >= 0.995) {
+      if (!completed) {
+        completed = true;
+        celebrate();
+      }
+    } else if (progress < 0.9) {
+      completed = false;
+    }
   }
 
   let frame = 0;
