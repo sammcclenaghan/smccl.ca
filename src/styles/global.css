@@ -140,7 +140,6 @@
     border-radius: 9999px;
     background: color-mix(in oklab, var(--bg1) 65%, transparent);
     backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     box-shadow:
       0 1px 0 0 color-mix(in oklab, var(--bg1) 70%, transparent) inset,
       0 2px 4px color-mix(in oklab, var(--tx1) 5%, transparent),
