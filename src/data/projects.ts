@@ -10,7 +10,7 @@ export const projects: Project[] = [
     name: "courseflow",
     href: "https://courseflow.smccl.ca",
     description:
-      "A UVic course scheduler on Cloudflare Workers, D1, and Durable Objects — catalog search with live enrollment, timetable building, and real-time schedule sharing.",
+      "A simple tool to browse and schedule UVic courses.",
     featured: true,
   },
   {
