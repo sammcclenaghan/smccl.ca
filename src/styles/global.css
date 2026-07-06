@@ -122,6 +122,14 @@
     animation-delay: calc(var(--i, 0) * 0.07s);
   }
 
+  /* Writing pages are static: content should just be there, no entrance.
+     Layout sets data-static; same neutralization as reduced motion. */
+  [data-static] .animate {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
   /* Floating translucent bar. Shadow layers are mixed from the text color,
      so they read as ink in light mode and as broadcast light in dark mode —
      one rule covers both themes. One static state, on purpose. */
@@ -151,39 +159,14 @@
     transform: scale(0.96);
   }
 
-  /* The dot's jobs. On article pages the disc itself is the reading
-     meter: it starts as a pale tint of the accent and saturates back to
-     full color as you read (--progress is set from scroll position by
-     header.js). Reaching the end earns one soft completion pulse. Progress
-     lives inside the circle — nothing is drawn around it. During slow
-     navigations it breathes; when a page lands it gives one pulse. */
+  /* The dot is a plain accent circle that links home. Its one indulgence
+     is press physics: it squashes while held and springs back on release
+     (header.js drives the classes). The quicker transition matches every
+     other pressed control. */
   #nav-dot > span {
     background: var(--accent);
-    transition:
-      transform 300ms var(--ease-out),
-      background-color 300ms var(--ease-out);
+    transition: transform 300ms var(--ease-out);
   }
-  #nav-dot.dot-reading > span {
-    background: color-mix(
-      in oklab,
-      var(--accent) calc(18% + 82% * var(--progress, 0)),
-      var(--bg2)
-    );
-  }
-  /* Finishing the piece: the dot crouches, hops, lands, and sends out a
-     ripple that dissolves — a transient reward, not a persistent mark */
-  .dot-complete > span {
-    animation: dot-complete 700ms var(--ease-out);
-  }
-  .dot-loading > span {
-    animation: dot-breathe 900ms ease-in-out infinite;
-  }
-  .dot-arrive > span {
-    animation: dot-arrive 350ms var(--ease-out);
-  }
-  /* The dot is a body, not an icon: pressing squashes it underfoot,
-     releasing springs it tall before it settles (header.js drives the
-     classes). The quicker transition matches every other pressed control. */
   #nav-dot.dot-pressed > span {
     transform: scaleX(1.12) scaleY(0.82);
     transition-duration: 150ms;
@@ -196,15 +179,6 @@
   .dot-shrug > span {
     animation: dot-shrug 500ms var(--ease-out);
   }
-  /* The dot reacts to the lights: switching to light it squints like
-     stepping out of a cinema; switching to dark it exhales and relaxes.
-     Same breath tempo as dot-breathe, so ease-in-out is at home here. */
-  .dot-squint > span {
-    animation: dot-squint 450ms var(--ease-out);
-  }
-  .dot-exhale > span {
-    animation: dot-exhale 900ms ease-in-out;
-  }
   /* The underline marks the page you're on — and slides there when you navigate */
   .nav-underline {
     position: absolute;
@@ -216,16 +190,6 @@
     background: var(--accent);
     view-transition-name: nav-underline;
   }
-  /* On home nothing is "current" — home is the dot itself. This invisible
-     twin under the dot gives the view transition a destination, so going
-     home the underline glides left and dissolves into the dot (whose
-     arrival pulse sells the swallow), and leaving home it slips back out. */
-  .nav-underline-dot {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
-  }
 }
 
 ::view-transition-group(nav-underline) {
@@ -236,40 +200,6 @@
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes dot-breathe {
-  50% {
-    transform: scale(0.85);
-    opacity: 0.7;
-  }
-}
-
-@keyframes dot-arrive {
-  35% {
-    transform: scale(1.18);
-  }
-}
-
-/* Crouch, hop, land — the ripple leaves at the top of the jump */
-@keyframes dot-complete {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 45%, transparent);
-  }
-  20% {
-    transform: scaleX(1.18) scaleY(0.78);
-  }
-  45% {
-    transform: translateY(-7px) scaleX(0.9) scaleY(1.16);
-  }
-  70% {
-    transform: translateY(0) scaleX(1.12) scaleY(0.86);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 14px transparent;
-  }
 }
 
 @keyframes dot-release {
@@ -305,30 +235,6 @@
   }
 }
 
-@keyframes dot-squint {
-  0% {
-    transform: scaleY(1);
-  }
-  30% {
-    transform: scaleY(0.45) scaleX(1.08);
-  }
-  60% {
-    transform: scaleY(0.62) scaleX(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes dot-exhale {
-  35% {
-    transform: scale(0.85);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .animate {
     opacity: 1;
@@ -336,13 +242,8 @@
     animation: none;
   }
 
-  .dot-loading > span,
-  .dot-arrive > span,
-  .dot-complete > span,
   .dot-release > span,
-  .dot-shrug > span,
-  .dot-squint > span,
-  .dot-exhale > span {
+  .dot-shrug > span {
     animation: none;
   }
 }
@@ -449,22 +350,6 @@ body::before {
 
 #theme-toggle:active {
   transform: scale(0.9);
-}
-
-/* Theme change sweeps out from the toggle as an expanding circle
-   (footer.js drives the clip-path; this neutralizes the default fade) */
-html[data-theme-switching]::view-transition-old(root),
-html[data-theme-switching]::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-html[data-theme-switching]::view-transition-old(root) {
-  z-index: 0;
-}
-
-html[data-theme-switching]::view-transition-new(root) {
-  z-index: 1;
 }
 
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
@@ -721,54 +606,20 @@ html[data-theme-switching]::view-transition-new(root) {
 .email-popover.copied .email-check-path {
   animation: email-draw 300ms 200ms var(--ease-out) forwards;
 }
-.email-popover.sent .email-confirm-sent {
-  clip-path: inset(0 0 0 0 round 0.5rem);
-}
-.email-plane-line,
-.email-plane-body {
-  stroke-dasharray: 20;
-  stroke-dashoffset: 20;
-}
-.email-plane {
-  transition: transform 300ms var(--ease-out),
-              opacity 200ms var(--ease-out);
-}
-.email-popover.sent .email-plane-body {
-  animation: email-draw 250ms 200ms var(--ease-out) forwards;
-}
-.email-popover.sent .email-plane-line {
-  animation: email-draw 200ms 350ms var(--ease-out) forwards;
-}
-.email-popover.sent .email-plane {
-  animation: email-fly 400ms 500ms var(--ease-out-expo) forwards;
-}
 @keyframes email-draw {
   to { stroke-dashoffset: 0; }
 }
-@keyframes email-fly {
-  to {
-    transform: translate(6px, -6px);
-    opacity: 0;
-  }
-}
 
-/* Under reduced motion the popover still works — confirmations just
-   appear instead of drawing themselves */
+/* Under reduced motion the popover still works — the confirmation just
+   appears instead of drawing itself */
 @media (prefers-reduced-motion: reduce) {
   .email-popover,
-  .email-confirm-overlay,
-  .email-plane {
+  .email-confirm-overlay {
     transition: none;
   }
 
-  .email-popover.copied .email-check-path,
-  .email-popover.sent .email-plane-line,
-  .email-popover.sent .email-plane-body {
+  .email-popover.copied .email-check-path {
     animation: none;
     stroke-dashoffset: 0;
-  }
-
-  .email-popover.sent .email-plane {
-    animation: none;
   }
 }

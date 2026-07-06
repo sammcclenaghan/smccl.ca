@@ -68,24 +68,6 @@
               ></polyline></svg
             >
           </div>
-          <div class="email-confirm-overlay email-confirm-sent">
-            <svg
-              class="email-plane"
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><line class="email-plane-line" x1="22" y1="2" x2="11" y2="13"
-              ></line><polygon
-                class="email-plane-body"
-                points="22 2 15 22 11 13 2 9 22 2"></polygon></svg
-            >
-          </div>
         </div>
       </span>
       <a
@@ -227,16 +209,8 @@
           }
         });
 
-        mailLink.addEventListener("click", (event) => {
-          event.preventDefault();
-          popover.classList.add("sent");
-          setTimeout(() => {
-            window.location.href = mailLink.href;
-          }, 350);
-          setTimeout(() => {
-            popover.classList.remove("sent");
-            closePopover();
-          }, 1000);
+        mailLink.addEventListener("click", () => {
+          closePopover();
         });
       }
 

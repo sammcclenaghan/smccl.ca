@@ -12,6 +12,8 @@ interface Props {
   image?: string;
   type?: "website" | "article";
   publishedDate?: Date;
+  /** Writing pages render static — no entrance animation, content is just there */
+  static?: boolean;
 }
 
 const {
@@ -20,6 +22,7 @@ const {
   image = "/og/default.png",
   type = "website",
   publishedDate,
+  static: isStatic = false,
 } = Astro.props;
 
 const siteName = "Sam McClenaghan";
@@ -203,7 +206,11 @@ const articleSchema =
 
   </head>
   <body>
-    <div class="min-h-screen flex flex-col" id="page">
+    <div
+      class="min-h-screen flex flex-col"
+      id="page"
+      data-static={isStatic ? "" : undefined}
+    >
       <Header />
       <div class="w-full flex-1 flex flex-col mx-auto px-6 pb-8 max-w-2xl">
         <main class="flex-1">

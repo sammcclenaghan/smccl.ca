@@ -23,15 +23,6 @@ function applyTheme(mode) {
     ?.setAttribute("content", THEME_COLORS[mode]);
 }
 
-// The dot reacts to the lights: switching to light it squints, switching
-// to dark it exhales. Gestures live in header.js, which loads first; the
-// typeof check keeps the toggle working even if that ever changes.
-function reactDotToTheme(mode) {
-  const dot = document.getElementById("nav-dot");
-  if (!dot || typeof playDotGesture !== "function") return;
-  playDotGesture(dot, mode === "light" ? "dot-squint" : "dot-exhale");
-}
-
 function updateToggleLabel(mode) {
   const toggle = document.getElementById("theme-toggle");
   if (toggle) {
@@ -40,59 +31,10 @@ function updateToggleLabel(mode) {
   }
 }
 
-// Theme changes sweep out from the toggle as an expanding circle.
-// global.css neutralizes the default view-transition crossfade while
-// html[data-theme-switching] is set; we drive the clip-path here.
-function setTheme(mode, origin) {
+function setTheme(mode) {
   localStorage.setItem(STORAGE_KEY, mode);
   updateToggleLabel(mode);
-
-  const reduceMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-  if (!document.startViewTransition || reduceMotion || !origin) {
-    applyTheme(mode);
-    // Only a person flipping the switch earns a reaction — programmatic
-    // or reduced-motion changes don't.
-    if (!reduceMotion && origin) {
-      reactDotToTheme(mode);
-    }
-    return;
-  }
-
-  const rect = origin.getBoundingClientRect();
-  const x = rect.left + rect.width / 2;
-  const y = rect.top + rect.height / 2;
-  const radius = Math.hypot(
-    Math.max(x, window.innerWidth - x),
-    Math.max(y, window.innerHeight - y),
-  );
-
-  docEl.dataset.themeSwitching = "";
-  const transition = document.startViewTransition(() => applyTheme(mode));
-  transition.ready
-    .then(() => {
-      docEl.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${radius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 400,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-          pseudoElement: "::view-transition-new(root)",
-        },
-      );
-    })
-    .catch(() => {});
-  transition.finished.finally(() => {
-    delete docEl.dataset.themeSwitching;
-    // React after the sweep: the circle reveals the dot last, so the
-    // squint/exhale lands right as the new theme reaches it.
-    reactDotToTheme(mode);
-  });
+  applyTheme(mode);
 }
 
 function initializeFooterState() {
@@ -125,7 +67,7 @@ if (!window.__siteFooterInitialized) {
   document.addEventListener("click", (event) => {
     const toggle = event.target?.closest?.("#theme-toggle");
     if (!toggle) return;
-    setTheme(getTheme() === "dark" ? "light" : "dark", toggle);
+    setTheme(getTheme() === "dark" ? "light" : "dark");
   });
 }
 

@@ -59,19 +59,9 @@ function handleKeydown(event) {
   link.click();
 }
 
-function getNavDot() {
-  return document.getElementById("nav-dot");
-}
-
 // One-shot dot gestures. Clearing the others first means a new gesture
 // always interrupts a stale one instead of silently losing the race.
-const DOT_GESTURES = [
-  "dot-release",
-  "dot-shrug",
-  "dot-squint",
-  "dot-exhale",
-  "dot-complete",
-];
+const DOT_GESTURES = ["dot-release", "dot-shrug"];
 
 function playDotGesture(dot, name) {
   DOT_GESTURES.forEach((gesture) => dot.classList.remove(gesture));
@@ -82,104 +72,6 @@ function playDotGesture(dot, name) {
     dot.classList.remove(name);
     dot.removeEventListener("animationend", onEnd);
   });
-}
-
-// On article pages, the dot pales out and saturates back to full accent
-// as you read; reaching the end earns one completion pulse.
-let ringCleanup = null;
-
-function setupReadingRing() {
-  if (ringCleanup) {
-    ringCleanup();
-    ringCleanup = null;
-  }
-
-  const dot = getNavDot();
-  const article = document.querySelector("article");
-  if (!dot) {
-    return;
-  }
-  if (!article) {
-    dot.classList.remove("dot-reading");
-    return;
-  }
-
-  // The pulse fires once when the reader reaches the end, and re-arms
-  // only after they scroll back up a real distance — no re-triggering
-  // from small wiggles at the bottom of the page.
-  let completed = false;
-
-  function celebrate() {
-    playDotGesture(dot, "dot-complete");
-  }
-
-  function update() {
-    const rect = article.getBoundingClientRect();
-    const total = rect.height - window.innerHeight;
-    // A post that fits on one screen has nothing to track.
-    if (total < 80) {
-      dot.classList.remove("dot-reading");
-      return;
-    }
-    dot.classList.add("dot-reading");
-    const progress = Math.min(1, Math.max(0, -rect.top / total));
-    dot.style.setProperty("--progress", String(progress));
-
-    if (progress >= 0.995) {
-      if (!completed) {
-        completed = true;
-        celebrate();
-      }
-    } else if (progress < 0.9) {
-      completed = false;
-    }
-  }
-
-  let frame = 0;
-  function onScroll() {
-    if (frame) return;
-    frame = requestAnimationFrame(() => {
-      frame = 0;
-      update();
-    });
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll, { passive: true });
-  update();
-
-  ringCleanup = () => {
-    window.removeEventListener("scroll", onScroll);
-    window.removeEventListener("resize", onScroll);
-    if (frame) cancelAnimationFrame(frame);
-  };
-}
-
-// The dot doubles as the loading indicator: it only starts breathing if a
-// navigation is still in flight after 300ms, and greets each page landing
-// with a single pulse.
-let loadingTimer = null;
-
-function handleNavigationStart() {
-  loadingTimer = setTimeout(() => {
-    getNavDot()?.classList.add("dot-loading");
-  }, 300);
-}
-
-function handlePageLanded() {
-  if (loadingTimer) {
-    clearTimeout(loadingTimer);
-    loadingTimer = null;
-  }
-  const dot = getNavDot();
-  if (!dot) return;
-  dot.classList.remove("dot-loading");
-  dot.classList.add("dot-arrive");
-  dot.addEventListener(
-    "animationend",
-    () => dot.classList.remove("dot-arrive"),
-    { once: true },
-  );
 }
 
 // On the home page the dot has nowhere left to take you — clicking it
@@ -220,14 +112,10 @@ if (!window.__siteHeaderInitialized) {
 
   document.addEventListener("DOMContentLoaded", () => {
     applySequentialFade();
-    setupReadingRing();
   });
   document.addEventListener("astro:page-load", () => {
     applySequentialFade();
-    setupReadingRing();
-    handlePageLanded();
   });
-  document.addEventListener("astro:before-preparation", handleNavigationStart);
   document.addEventListener("astro:after-swap", () => {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -241,5 +129,4 @@ if (!window.__siteHeaderInitialized) {
 
 if (document.readyState !== "loading") {
   applySequentialFade();
-  setupReadingRing();
 }
