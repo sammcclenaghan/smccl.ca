@@ -1,7 +1,7 @@
 ---
 title: "Learning Why AI Agents Need Sandboxes"
 description: "A small experiment with LLM-generated shell commands, inspired by Nanoclaw and the old maid gem."
-date: 2026-02-16
+date: 2026-02-26
 ---
 
 I started thinking about this after reading [Nanoclaw](https://github.com/nanocoai/nanoclaw).
