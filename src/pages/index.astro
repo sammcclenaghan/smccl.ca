@@ -11,7 +11,6 @@ const featured = projects.filter((p) => p.featured);
 const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 4);
-
 ---
 
 <Layout>
@@ -21,9 +20,8 @@ const posts = (await getCollection("blog"))
       <div class="animate space-y-4 leading-relaxed text-muted-foreground">
         <p>
           I am a Computer Science student at the University of Victoria,
-          currently building software at Vertical City. I like solving
-          problems simply and efficiently, and I'm always trying to learn
-          something new.
+          currently building software at Vertical City. I like solving problems
+          simply and efficiently, and I'm always trying to learn something new.
         </p>
         <p>I'm looking for a software internship for summer 2027.</p>
       </div>
@@ -35,7 +33,7 @@ const posts = (await getCollection("blog"))
       <div class="animate space-y-1">
         <h3 class="text-item font-medium">Vertical City</h3>
         <span class="meta block">May 2026 — Present</span>
-        <p class="text-sm text-muted-foreground">Software Engineer</p>
+        <p class="text-sm text-muted-foreground">Software Engineer Intern</p>
         <p class="text-sm leading-relaxed text-muted-foreground">
           Building backend systems that deliver content to digital signage in
           elevators and lobbies, with a focus on request handling, data usage,
@@ -57,7 +55,9 @@ const posts = (await getCollection("blog"))
       <div class="animate space-y-1">
         <h3 class="text-item font-medium">Trustscience</h3>
         <span class="meta block">Jan — Aug 2024</span>
-        <p class="text-sm text-muted-foreground">Application &amp; APIs Developer Intern</p>
+        <p class="text-sm text-muted-foreground">
+          Application &amp; APIs Developer Intern
+        </p>
         <p class="text-sm leading-relaxed text-muted-foreground">
           Built backend services for file version control and real-time
           financial analytics.
