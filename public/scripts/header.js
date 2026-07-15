@@ -1,7 +1,7 @@
 function applySequentialFade(root = document) {
   const elements = root.querySelectorAll(".animate");
   elements.forEach((element, index) => {
-    element.style.setProperty("--i", String(index + 1));
+    element.style.setProperty("--i", String(index));
     element.style.animation = "none";
     void element.offsetWidth;
     element.style.animation = "";
@@ -11,7 +11,7 @@ function applySequentialFade(root = document) {
 function prepareSequentialFade(doc) {
   const elements = doc.querySelectorAll(".animate");
   elements.forEach((element, index) => {
-    element.style.setProperty("--i", String(index + 1));
+    element.style.setProperty("--i", String(index));
   });
 }
 

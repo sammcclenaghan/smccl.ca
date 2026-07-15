@@ -144,43 +144,77 @@
         const mailLink = document.getElementById("email-mail");
         if (!trigger || !popover || !copyBtn || !mailLink) return;
 
+        let closingAbort = null;
+
+        // Re-entering mid-close rescues the popover: abort the pending
+        // hide and let the transition retarget back to open.
+        function cancelClose() {
+          if (closingAbort) {
+            closingAbort.abort();
+            closingAbort = null;
+          }
+          popover.classList.remove("closing");
+        }
+
         function closePopover() {
           if (!popover.matches(":popover-open")) return;
+          // Under reduced motion the popover has no transition, so
+          // transitionend never fires — hide immediately instead
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            popover.hidePopover();
+            return;
+          }
+          if (popover.classList.contains("closing")) return;
           popover.classList.add("closing");
+          closingAbort = new AbortController();
           popover.addEventListener(
             "transitionend",
             () => {
+              closingAbort = null;
               popover.classList.remove("closing");
               if (popover.matches(":popover-open")) {
                 popover.hidePopover();
               }
             },
-            { once: true },
+            { once: true, signal: closingAbort.signal },
           );
         }
 
+        function positionPopover() {
+          const rect = trigger.getBoundingClientRect();
+          const popoverHeight = popover.offsetHeight;
+          const popoverWidth = popover.offsetWidth;
+          // Center on the trigger, but stay inside the viewport —
+          // the trigger sits near the screen edge on phones
+          const left = Math.max(
+            12,
+            Math.min(
+              rect.left + rect.width / 2 - popoverWidth / 2,
+              window.innerWidth - popoverWidth - 12,
+            ),
+          );
+          popover.style.top = `${rect.top - popoverHeight - 8}px`;
+          popover.style.left = `${left}px`;
+        }
+
+        // The popover is position: fixed while its trigger scrolls with
+        // the page — track it while open so it stays glued.
         popover.addEventListener("toggle", (event) => {
-          if (event.newState !== "open") return;
-          requestAnimationFrame(() => {
-            const rect = trigger.getBoundingClientRect();
-            const popoverHeight = popover.offsetHeight;
-            const popoverWidth = popover.offsetWidth;
-            // Center on the trigger, but stay inside the viewport —
-            // the trigger sits near the screen edge on phones
-            const left = Math.max(
-              12,
-              Math.min(
-                rect.left + rect.width / 2 - popoverWidth / 2,
-                window.innerWidth - popoverWidth - 12,
-              ),
-            );
-            popover.style.top = `${rect.top - popoverHeight - 8}px`;
-            popover.style.left = `${left}px`;
-          });
+          if (event.newState === "open") {
+            requestAnimationFrame(positionPopover);
+            window.addEventListener("scroll", positionPopover, {
+              passive: true,
+            });
+            window.addEventListener("resize", positionPopover);
+          } else {
+            window.removeEventListener("scroll", positionPopover);
+            window.removeEventListener("resize", positionPopover);
+          }
         });
 
         let dismissTimer = null;
         const clearDismiss = () => {
+          cancelClose();
           if (dismissTimer) {
             clearTimeout(dismissTimer);
             dismissTimer = null;
